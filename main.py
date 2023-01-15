@@ -26,14 +26,13 @@ class Button(pygame.sprite.Sprite):
                     if self.action == 'congame':
                         pass
                     if self.action == 'settings':
-                        pass
+                        game.settings()
+                    if self.action == 'menu':
+                        game.menu()
                     if self.action == 'library':
                         pygame.time.delay(200)
                     if self.action == 'exit':
-                        game.run_menu = False
-
-    def check_click(self):
-        pass
+                        game.run_menu, game.run_game, game.run_settings, game.run_library = False, False, False, False,
 
 
 var_btn_menu = [
@@ -48,18 +47,25 @@ var_btn_menu = [
     Button('Images/btns/exit.png', 'exit', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2, SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 2),
                 ]
-
+var_btn_settings = [Button('Images/btns/newgame.png', 'newgame', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2, SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 2),
+                    Button('Images/btns/exit.png', 'menu', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
+                           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2, SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08)
+                    ]
 
 class Game:
     def __init__(self, SIZE, SCREEN_WIDTH, SCREEN_HEIGHT):
         self.fps = 60
-        self.run_menu, self.run_over, self.over_over = True, False, False
+        self.run_menu, self.run_game, self.run_settings, self.run_library = True, False, False, False
         self.menu_btn = pygame.sprite.Group()
+        self.settings_btn = pygame.sprite.Group()
         for i in var_btn_menu:
             self.menu_btn.add(i)
+        for i in var_btn_settings:
+            self.settings_btn.add(i)
 
     def menu(self):
-        self.run_menu, self.run_over, self.over_over = True, False, False
+        self.run_menu, self.run_game, self.run_settings, self.run_library = True, False, False, False
         while self.run_menu:
             screen.fill('black')
             self.menu_btn.update()
@@ -76,10 +82,25 @@ class Game:
     def game(self):
         pass
 
-    def over(self):
+    def settings(self):
+        self.run_menu, self.run_game, self.run_settings, self.run_library = False, False, True, False
+        while self.run_settings:
+            screen.fill('black')
+            self.settings_btn.update()
+            self.settings_btn.draw(screen)
+            pygame.display.flip()
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_ESCAPE]:
+                self.run_menu = False
+                quit()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.run_menu = False
+
+    def over_menu(self):
         pass
 
-    def info(self):
+    def library(self):
         pass
 
 
