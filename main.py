@@ -9,4 +9,3 @@ cur = conn.cursor()
 # cur.execute("""CREATE TABLE IF NOT EXISTS Gun(gunid INT PRIMARY KEY, Name TEXT,  Info TEXT,   bullet_delay INTEGER,
 # hp INTEGER,   sprite_way TEXT);""")
 # conn.commit()
-
