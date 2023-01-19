@@ -19,7 +19,7 @@ class Button(pygame.sprite.Sprite):
             if self.rect.y < mouse[1] < self.rect.y + self.rect.height:
                 if click[0] == 1:
                     if self.action == 'newgame':
-                        pass
+                        game.game()
                     if self.action == 'congame':
                         pass
                     if self.action == 'settgame':

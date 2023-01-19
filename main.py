@@ -6,7 +6,7 @@ from library.basic import Game
 def run():
     pygame.init()
     game = Game(screen, SCREEN_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT)
-    game.menu()
+    game.game()
 
 
 if __name__ == '__main__':
