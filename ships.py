@@ -1,9 +1,14 @@
 import pygame
 
 
-class Ammunition:
+class Ammunition(pygame.sprite.Sprite):
     def __init__(self, pos, type_ammunition, speed, damage, number, sprite_id, info_id, quarter, corner):
-        self.pos = pos
+        super().__init__()
+        self.image = pygame.Surface((3, 3))
+        self.image.fill('yellow')
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = pos[0], pos[1]
+        self.mask = pygame.mask.from_surface(self.image)
         self.type = type_ammunition
         self.speed = speed
         self.damage = damage
@@ -15,24 +20,17 @@ class Ammunition:
 
     def move(self, fps):
         if self.quarter == 1:
-            self.pos[0] += self.speed * (1 - self.corner) / fps
-            self.pos[1] -= self.speed * self.corner / fps
+            self.rect.x += self.speed * (1 - self.corner) / fps
+            self.rect.y -= self.speed * self.corner / fps
         if self.quarter == 2:
-            self.pos[0] -= self.speed * (1 - self.corner) / fps
-            self.pos[1] -= self.speed * self.corner / fps
+            self.rect.x -= self.speed * (1 - self.corner) / fps
+            self.rect.y -= self.speed * self.corner / fps
         if self.quarter == 3:
-            self.pos[0] -= self.speed * (1 - self.corner) / fps
-            self.pos[1] += self.speed * self.corner / fps
+            self.rect.x -= self.speed * (1 - self.corner) / fps
+            self.rect.y += self.speed * self.corner / fps
         if self.quarter == 4:
-            self.pos[0] += self.speed * (1 - self.corner) / fps
-            self.pos[1] += self.speed * self.corner / fps
-
-    def draw(self, screen, side):
-        if side > 0:
-            color = pygame.color.Color('yellow')
-        else:
-            color = pygame.color.Color('blue')
-        pygame.draw.circle(screen, color, self.pos, 2)
+            self.rect.x += self.speed * (1 - self.corner) / fps
+            self.rect.y += self.speed * self.corner / fps
 
 
 class Weapon:
@@ -68,16 +66,20 @@ class Armour:
                 return 0
 
 
-class SpaceShip:
-    def __init__(self, name, pos, hp, speed, info_id, sprite_id, side,
+class SpaceShip(pygame.sprite.Sprite):
+    def __init__(self, name, pos, hp, speed, info_id, sprite_id, color,
                  weapon=None, armor=None):
+        super().__init__()
+        self.image = pygame.Surface((30, 30))
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = pos[0], pos[1]
+        self.mask = pygame.mask.from_surface(self.image)
         self.name = name
-        self.pos = pos
         self.hp = hp
         self.speed = speed
         self.info_id = info_id
         self.sprite_id = sprite_id
-        self.side = side
         self.weapon = weapon
         self.armor = armor
 
@@ -91,13 +93,13 @@ class SpaceShip:
 
     def move(self, direction, fps):
         if direction == 'left':
-            self.pos[0] -= self.speed / fps
+            self.rect.x -= self.speed / fps
         if direction == 'right':
-            self.pos[0] += self.speed / fps
+            self.rect.x += self.speed / fps
         if direction == 'up':
-            self.pos[1] -= self.speed / fps
+            self.rect.y -= self.speed / fps
         if direction == 'down':
-            self.pos[1] += self.speed / fps
+            self.rect.y += self.speed / fps
 
     def equip_gun(self, weapon):
         self.weapon = weapon
@@ -105,14 +107,7 @@ class SpaceShip:
     def equip_armour(self, armour):
         self.armor = armour
 
-    def draw(self, screen):
-        if self.side > 0:
-            color = pygame.color.Color('green')
-        else:
-            color = pygame.color.Color('red')
-        pygame.draw.rect(screen, color, (self.pos, (25, 25)))
-
-    def update(self, keys, screen, fps):
+    def update(self, keys, fps):
         if keys[pygame.K_w]:
             self.move('up', fps)
         if keys[pygame.K_s]:
@@ -121,4 +116,3 @@ class SpaceShip:
             self.move('left', fps)
         if keys[pygame.K_d]:
             self.move('right', fps)
-        self.draw(screen)
