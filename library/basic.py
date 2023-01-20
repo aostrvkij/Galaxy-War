@@ -17,8 +17,8 @@ class Ship(pygame.sprite.Sprite):
         self.image = pygame.Surface((30, 30))
         self.image.fill('red')
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect.x, self.rect.y = pos[0], pos[1]
-
 
     def update(self, keys):
         if keys[pygame.K_w]:
@@ -34,6 +34,7 @@ class Ship(pygame.sprite.Sprite):
 
     def attack(self):
         pass
+
 
 class Game:
     def __init__(self, screen, size, screen_width, screen_height):
