@@ -2,28 +2,30 @@ import pygame
 
 
 class Ammunition:
-    def __init__(self, pos, type, speed, damage, number, sprite_id, info_id):
+    def __init__(self, pos, type_ammunition, speed, damage, number, sprite_id, info_id, quarter, corner):
         self.pos = pos
-        self.type = type
+        self.type = type_ammunition
         self.speed = speed
         self.damage = damage
         self.number = number
         self.sprite_id = sprite_id
         self.info_id = info_id
+        self.quarter = quarter
+        self.corner = corner
 
-    def move(self, quarter, k, fps):
-        if quarter == 1:
-            self.pos[0] += self.speed * (1 - k) / fps
-            self.pos[1] -= self.speed * k / fps
-        if quarter == 2:
-            self.pos[0] -= self.speed * (1 - k) / fps
-            self.pos[1] -= self.speed * k / fps
-        if quarter == 3:
-            self.pos[0] -= self.speed * (1 - k) / fps
-            self.pos[1] += self.speed * k / fps
-        if quarter == 4:
-            self.pos[0] += self.speed * (1 - k) / fps
-            self.pos[1] += self.speed * k / fps
+    def move(self, fps):
+        if self.quarter == 1:
+            self.pos[0] += self.speed * (1 - self.corner) / fps
+            self.pos[1] -= self.speed * self.corner / fps
+        if self.quarter == 2:
+            self.pos[0] -= self.speed * (1 - self.corner) / fps
+            self.pos[1] -= self.speed * self.corner / fps
+        if self.quarter == 3:
+            self.pos[0] -= self.speed * (1 - self.corner) / fps
+            self.pos[1] += self.speed * self.corner / fps
+        if self.quarter == 4:
+            self.pos[0] += self.speed * (1 - self.corner) / fps
+            self.pos[1] += self.speed * self.corner / fps
 
     def draw(self, screen, side):
         if side > 0:
@@ -34,13 +36,14 @@ class Ammunition:
 
 
 class Weapon:
-    def __init__(self, name, recharge, store_size, rate_of_fire, ammunition_type, info_id):
+    def __init__(self, name, recharge, store_size, rate_of_fire, ammunition_type, info_id, sprite_id):
         self.name = name
         self.recharge = recharge
         self.store_size = store_size
         self.rate_of_fire = rate_of_fire
         self.ammunition_type = ammunition_type
         self.info_id = info_id
+        self.sprite_id = sprite_id
 
 
 class Armour:
@@ -119,11 +122,3 @@ class SpaceShip:
         if keys[pygame.K_d]:
             self.move('right', fps)
         self.draw(screen)
-
-
-# drow = Armour('drow', 1, 10, 1)
-# shatl = SpaceShip('baron', [0, 0], 100, 30, 1, 1, 1)
-# shatl.equip_armour(drow)
-# print(shatl.get_damage(110))
-# print(shatl.hp)
-

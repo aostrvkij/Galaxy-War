@@ -1,7 +1,6 @@
 from ships import *
 import pygame
 
-
 if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h))
@@ -27,24 +26,24 @@ if __name__ == '__main__':
                     run = False
                 if event.key == pygame.K_SPACE:
                     pos = ship.pos.copy()
-                    bullets.append(Ammunition(pos, 1, 600, 1, 1, 1, 1))
+                    if mouse_pos[0] > 0:
+                        if mouse_pos[1] > 0:
+                            q = 4
+                        else:
+                            q = 1
+                    else:
+                        if mouse_pos[1] > 0:
+                            q = 3
+                        else:
+                            q = 2
+                    bullets.append(Ammunition(pos, 1, 600, 1, 1, 1, 1, q, 0.5))
                     b = 1
             if event.type == pygame.MOUSEMOTION:
                 mouse_pos = (event.pos[0] - ship.pos[0], event.pos[1] - ship.pos[1])
 
         if b:
-            if mouse_pos[0] > 0:
-                if mouse_pos[1] > 0:
-                    q = 4
-                else:
-                    q = 1
-            else:
-                if mouse_pos[1] > 0:
-                    q = 3
-                else:
-                    q = 2
             for bullet in bullets:
-                bullet.move(q, 0, fps)
+                bullet.move(fps)
         ship.update(keys, screen, fps)
         if b:
             for bullet in bullets:
