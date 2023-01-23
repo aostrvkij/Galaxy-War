@@ -1,11 +1,11 @@
 import pygame
-# from library.buttons import Button
-from library.config import screen, SCREEN_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT
+from library.config import screen
 from library.basic import Game
-# from library.buttons import Button
+
+
 def run():
     pygame.init()
-    game = Game(screen, SCREEN_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT)
+    game = Game(screen)
     game.menu()
 
 

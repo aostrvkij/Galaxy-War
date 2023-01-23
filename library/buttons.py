@@ -10,7 +10,6 @@ class Button(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-
     def update(self, game):
 
         mouse = pygame.mouse.get_pos()
@@ -30,6 +29,3 @@ class Button(pygame.sprite.Sprite):
                         game.library()
                     if self.action == 'exit':
                         game.run_menu, game.run_game, game.run_settings, game.run_library = False, False, False, False
-
-
-

@@ -1,17 +1,47 @@
 from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN
+from library.config import SCREEN_WIDTH, SCREEN_HEIGHT
 from pygame.display import flip
 from pygame.key import get_pressed
 from pygame import event
 import pygame
 
 
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y, move=None):
+        pygame.sprite.Sprite.__init__(self)
+        self.speed = 4
+        self.width, self.height = 2, 10
+        self.move = move
+        self.move_x = 0
+        self.image = pygame.Surface((3, 10))
+        self.image.fill('yellow')
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
+    def update(self):
+        if self.move:
+            self.move_x += 0.05
+            if self.move == 'left':
+                self.rect.x -= int(self.move_x)
+                self.rect.y -= self.speed
+            if self.move == 'right':
+                self.rect.x += int(self.move_x)
+                self.rect.y -= self.speed
+        else:
+            self.rect.y -= self.speed
+
+
+bullets = pygame.sprite.Group()
+
+
 class Ship(pygame.sprite.Sprite):
-    def __init__(self, pos, speed, number, damage, type, sprite_id, info_id):
+    def __init__(self, pos, speed, number, damage, type_ship, sprite_id, info_id):
         super().__init__()
         self.speed = speed
         self.number = number
         self.damage = damage
-        self.type = type
+        self.bullet_delay = 10
+        self.type = type_ship
         self.sprite_id = sprite_id
         self.info_id = info_id
         self.image = pygame.Surface((30, 30))
@@ -19,24 +49,46 @@ class Ship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = pos[0], pos[1]
 
-
     def update(self, keys):
         if keys[pygame.K_w]:
-            self.rect.y -= self.speed
+            if self.rect.y - self.speed > 0:
+                self.rect.y -= self.speed
+            else:
+                self.rect.y = 0
         if keys[pygame.K_s]:
-            self.rect.y += self.speed
+            if self.rect.y + self.speed < SCREEN_HEIGHT - self.rect.height:
+                self.rect.y += self.speed
+            else:
+                self.rect.y = SCREEN_HEIGHT - self.rect.height
         if keys[pygame.K_a]:
-            self.rect.x -= self.speed
+            if self.rect.x - self.speed > 0:
+                self.rect.x -= self.speed
+            else:
+                self.rect.x = 0
         if keys[pygame.K_d]:
-            self.rect.x += self.speed
+            if self.rect.x + self.speed < SCREEN_WIDTH - self.rect.width:
+                self.rect.x += self.speed
+            else:
+                self.rect.x = SCREEN_WIDTH - self.rect.width
         if keys[pygame.K_SPACE]:
-            self.attack()
+            self.attack(keys)
 
-    def attack(self):
-        pass
+    def attack(self, keys):
+        if self.bullet_delay == 10:
+            if keys[pygame.K_a] and keys[pygame.K_d] or not(keys[pygame.K_a] and keys[pygame.K_d]):
+                bullets.add(Bullet(self.rect.x, self.rect.top))
+            else:
+                if keys[pygame.K_a]:
+                    bullets.add(Bullet(self.rect.x, self.rect.top, 'left'))
+                if keys[pygame.K_d]:
+                    bullets.add(Bullet(self.rect.x, self.rect.top, 'right'))
+            self.bullet_delay = 0
+        elif self.bullet_delay < 10:
+            self.bullet_delay += 1
+
 
 class Game:
-    def __init__(self, screen, size, screen_width, screen_height):
+    def __init__(self, screen):
         self.run_menu, self.run_game, self.run_settings, self.run_library = True, False, False, False
 
         self.menu_btn = MENU_BTN
@@ -70,9 +122,11 @@ class Game:
             self.screen.fill('black')
             keys = get_pressed()
             self.ships.update(keys)
+            bullets.update()
+            bullets.draw(self.screen)
             self.ships.draw(self.screen)
             flip()
-            self.clock.tick(60)
+            self.clock.tick(FPS)
             if keys[pygame.K_ESCAPE]:
                 self.run_game = False
                 quit()
