@@ -9,15 +9,19 @@ if __name__ == '__main__':
     run = True
     clock = pygame.time.Clock()
     fps = 60
-    ship = SpaceShip('baron', [0, 0], 100, 300, 1, 1, 'green')
+    ship = SpaceShip('buran', [0, 0], 100, 300, 1, 1, 'green')
     a = 0
     s = 0
     d = 0
     b = 0
     mouse_pos = (0, 0)
     bullets = list()
-    sprite = pygame.sprite.Group()
-    sprite.add(ship)
+    ships = pygame.sprite.Group()
+    shells = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    ships.add(ship)
+    asteroid = Asteroid((50, 50), 60, 30, 100)
+    asteroids.add(asteroid)
     while run:
         keys = pygame.key.get_pressed()
         screen.fill((0, 0, 0))
@@ -42,18 +46,23 @@ if __name__ == '__main__':
                         else:
                             q = 2
                     try:
-                        bullets.append(Ammunition(pos, 1, 600, 1, 1, 1, 1, q,
+                        bullets.append(Ammunition(pos, 1, 240, 5, 1, 1, 1, q,
                                                   atan(abs(mouse_pos[1]) / abs(mouse_pos[0])) * 180 / pi / 90))
                     except ZeroDivisionError:
-                        bullets.append(Ammunition(pos, 1, 600, 1, 1, 1, 1, q, 1))
-                    sprite.add(bullets[-1])
+                        bullets.append(Ammunition(pos, 1, 240, 5, 1, 1, 1, q, 1))
+                    shells.add(bullets[-1])
                     b = 1
 
         if b:
             for bullet in bullets:
                 bullet.move(fps)
-        sprite.update(keys, fps)
-        sprite.draw(screen)
+        if ship.hp <= 0:
+            run = False
+        ships.update(keys, fps, shells)
+        asteroids.update(shells)
+        ships.draw(screen)
+        shells.draw(screen)
+        asteroids.draw(screen)
         clock.tick(fps)
         pygame.display.flip()
 

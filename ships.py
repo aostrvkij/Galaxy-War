@@ -107,7 +107,10 @@ class SpaceShip(pygame.sprite.Sprite):
     def equip_armour(self, armour):
         self.armor = armour
 
-    def update(self, keys, fps):
+    def update(self, keys, fps, group):
+        if pygame.sprite.spritecollide(self, group, False):
+            for i in pygame.sprite.spritecollide(self, group, True):
+                self.get_damage(i.damage)
         if keys[pygame.K_w]:
             self.move('up', fps)
         if keys[pygame.K_s]:
@@ -116,3 +119,36 @@ class SpaceShip(pygame.sprite.Sprite):
             self.move('left', fps)
         if keys[pygame.K_d]:
             self.move('right', fps)
+
+
+class Asteroid(pygame.sprite.Sprite):
+    def __init__(self, pos, speeed, radius, hp):
+        super().__init__()
+        self.image = pygame.Surface((2 * radius, 2 * radius),
+                                    pygame.SRCALPHA, 32)
+        pygame.draw.circle(self.image, pygame.Color("grey"),
+                           (radius, radius), radius)
+        self.rect = pygame.Rect(pos[0], pos[1], 2 * radius, 2 * radius)
+        self.rect.x, self.rect.y = pos[0], pos[1]
+        self.speed = speeed
+        self.hp = hp
+
+    def move(self, direction, fps):
+        if direction == 'left':
+            self.rect.x -= self.speed / fps
+        if direction == 'right':
+            self.rect.x += self.speed / fps
+        if direction == 'up':
+            self.rect.y -= self.speed / fps
+        if direction == 'down':
+            self.rect.y += self.speed / fps
+
+    def get_damage(self, damage):
+        self.hp -= damage
+        if self.hp <= 0:
+            self.kill()
+
+    def update(self, group):
+        if pygame.sprite.spritecollide(self, group, False):
+            for i in pygame.sprite.spritecollide(self, group, True):
+                self.get_damage(i.damage)
