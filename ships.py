@@ -1,19 +1,34 @@
+import os
+import sys
+
 import pygame
 
 
+def load_image(name, colorkey=None):
+    fullname = os.path.join('data', name)
+    # если файл не существует, то выходим
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
+    image = pygame.image.load(fullname)
+    return image
+
+
+classic_ammunition_image = load_image("Ammo.png")
+piercing_ammunition_image = load_image("Ammo_2.png")
+explosive_ammunition_image = load_image("Ammo_31.png")
+buran_image = load_image('buran.png')
+
+
 class Ammunition(pygame.sprite.Sprite):
-    def __init__(self, pos, type_ammunition, speed, damage, number, sprite_id, info_id, quarter, corner):
+    def __init__(self, pos, speed, damage, sprite, info_id, quarter, corner):
         super().__init__()
-        self.image = pygame.Surface((3, 3))
-        self.image.fill('yellow')
+        self.image = sprite
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = pos[0], pos[1]
         self.mask = pygame.mask.from_surface(self.image)
-        self.type = type_ammunition
         self.speed = speed
         self.damage = damage
-        self.number = number
-        self.sprite_id = sprite_id
         self.info_id = info_id
         self.quarter = quarter
         self.corner = corner
@@ -31,6 +46,11 @@ class Ammunition(pygame.sprite.Sprite):
         if self.quarter == 4:
             self.rect.x += self.speed * (1 - self.corner) / fps
             self.rect.y += self.speed * self.corner / fps
+
+
+class ClassicAmmunition(Ammunition):
+    def __init__(self, pos, speed, quarter, corner):
+        super().__init__(pos, speed, 3, explosive_ammunition_image, 1, quarter, corner)
 
 
 class Weapon:
@@ -152,3 +172,6 @@ class Asteroid(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, group, False):
             for i in pygame.sprite.spritecollide(self, group, True):
                 self.get_damage(i.damage)
+
+
+
