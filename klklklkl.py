@@ -136,7 +136,7 @@ while running:
         button_draw(screen, button_3)
     elif stage == 'Buran':
         button_draw(screen, button_return)
-        car_surf = pygame.image.load("Burancheme.jpg")
+        car_surf = pygame.image.load("telegram-cloud-photo-size-2-5368668734878761828-x.jpg")
         car_rect = car_surf.get_rect(center=(900 // 2, 400 // 2))
 
         screen.blit(car_surf, car_rect)
