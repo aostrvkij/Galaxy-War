@@ -3,6 +3,7 @@ from library.config import SCREEN_WIDTH, SCREEN_HEIGHT
 from pygame.display import flip
 from pygame.key import get_pressed
 from pygame import event
+from pygame import transform
 import pygame
 
 
@@ -38,59 +39,82 @@ class Bullet(pygame.sprite.Sprite):
 bullets = pygame.sprite.Group()
 
 
-class Ship(pygame.sprite.Sprite):
-    def __init__(self, pos, speed, number, damage, type_ship, sprite_id, info_id):
+class SpaceShip(pygame.sprite.Sprite):
+    def __init__(self, name, pos, hp, speed, info_id, sprite_id, color,
+                 weapon=None, armor=None):
         super().__init__()
-        self.speed = speed
-        self.number = number
-        self.damage = damage
-        self.bullet_delay = 10
-        self.type = type_ship
-        self.sprite_id = sprite_id
-        self.info_id = info_id
-        self.image = pygame.Surface((30, 30))
-        self.image.fill('red')
-        self.x, self.y = 100, 100
+        self.image = transform.scale(pygame.image.load('Images/buran.png'), (100, 200))
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = self.x, self.y
+        self.rect.x, self.rect.y = pos[0], pos[1]
+        self.mask = pygame.mask.from_surface(self.image)
+        self.name = name
+        self.hp = hp
+        self.hp_none = pygame.transform.scale(pygame.image.load('Images/hp_none.png'), (SCREEN_WIDTH * 0.02, SCREEN_WIDTH * 0.02))
+        self.hp_half = pygame.image.load('Images/hp_half.png')
+        self.hp_full = pygame.image.load('Images/hp_full.png')
+        self.speed = speed
+        self.info_id = info_id
+        self.sprite_id = sprite_id
+        self.weapon = weapon
+        self.armor = armor
 
-    def update(self, keys):
+    def get_damage(self, damage, f=False):
+        if self.armor is not None:
+            damage = self.armor.get_damage(damage, f)
+        self.hp -= damage
+        if self.hp <= 0:
+            return False
+        return True
+
+    def move(self, direction, fps):
+        if direction == 'left':
+            self.rect.x -= self.speed / fps
+        if direction == 'right':
+            self.rect.x += self.speed / fps
+        if direction == 'up':
+            self.rect.y -= self.speed / fps
+        if direction == 'down':
+            self.rect.y += self.speed / fps
+
+    def equip_gun(self, weapon):
+        self.weapon = weapon
+
+    def equip_armour(self, armour):
+        self.armor = armour
+
+    def draw_hp(self, screen):
+        hp_rect = self.hp_none.get_rect()
+        hp_rect.width, hp_rect.height = SCREEN_WIDTH * 0.025, SCREEN_WIDTH * 0.025
+        hp_rect.x, hp_rect.y = SCREEN_WIDTH // 100 * 0.05, SCREEN_HEIGHT - SCREEN_WIDTH // 100 * 0.05 - hp_rect.height
+        if self.hp < 30:
+            hp_image = pygame.transform.scale(self.hp_none, (hp_rect.width, hp_rect.height))
+            screen.blit(hp_image, hp_rect)
+        elif 30 <= self.hp < 70:
+            hp_image = pygame.transform.scale(self.hp_half, (hp_rect.width, hp_rect.height))
+            screen.blit(hp_image, hp_rect)
+        elif 70 <= self.hp:
+            hp_image = pygame.transform.scale(self.hp_full, (hp_rect.width, hp_rect.height))
+            screen.blit(hp_image, hp_rect)
+        if self.hp > 0:
+                pygame.draw.rect(screen, 'red', ((SCREEN_WIDTH * 0.025, SCREEN_HEIGHT * 0.96),
+                                             (SCREEN_WIDTH * 0.2 // 100 * self.hp, SCREEN_HEIGHT * 0.04)))
+
+
+    def update(self, keys, fps, group, screen):
+        if pygame.sprite.spritecollide(self, group, False):
+            for i in pygame.sprite.spritecollide(self, group, True):
+                self.get_damage(i.damage)
         if keys[pygame.K_w]:
-            if self.rect.y - self.speed > 0:
-                self.y -= self.speed / FPS
-            else:
-                self.rect.y = 0
+            self.move('up', fps)
         if keys[pygame.K_s]:
-            if self.rect.y + self.speed < SCREEN_HEIGHT - self.rect.height:
-                self.y += self.speed / FPS
-            else:
-                self.rect.y = SCREEN_HEIGHT - self.rect.height
+            self.move('down', fps)
         if keys[pygame.K_a]:
-            if self.rect.x - self.speed > 0:
-                self.x -= self.speed / FPS
-            else:
-                self.rect.x = 0
+            self.move('left', fps)
         if keys[pygame.K_d]:
-            if self.rect.x + self.speed < SCREEN_WIDTH - self.rect.width:
-                self.x += self.speed / FPS
-            else:
-                self.rect.x = SCREEN_WIDTH - self.rect.width
-        if keys[pygame.K_SPACE]:
-            self.attack(keys)
-        self.rect.x, self.rect.y = self.x, self.y
-
-    def attack(self, keys):
-        if self.bullet_delay >= 10:
-            if keys[pygame.K_a] and keys[pygame.K_d] or not(keys[pygame.K_a] and keys[pygame.K_d]):
-                bullets.add(Bullet(self.rect.x, self.rect.top))
-            else:
-                if keys[pygame.K_a]:
-                    bullets.add(Bullet(self.rect.x, self.rect.top, 'left'))
-                if keys[pygame.K_d]:
-                    bullets.add(Bullet(self.rect.x, self.rect.top, 'right'))
-            self.bullet_delay = 0
-        elif self.bullet_delay < 10:
-            self.bullet_delay += 10 / FPS
+            self.move('right', fps)
+        if keys[pygame.K_c]:
+            self.hp -= 1
+        self.draw_hp(screen)
 
 
 class Game:
@@ -102,8 +126,10 @@ class Game:
         self.libr_btns = LIBRARY_BTN
         self.screen = screen
         self.clock = pygame.time.Clock()
+        self.shells = pygame.sprite.Group()
         self.ships = pygame.sprite.Group()
-        self.ships.add(Ship((100, 100), 10, 1, 1, 1, 1, 1))
+        self.ship = SpaceShip('buran', [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2], 100, 300, 1, 1, 'green')
+        self.ships.add(self.ship)
 
     def menu(self):
         self.run_menu, self.run_game, self.run_settings, self.run_library = True, False, False, False
@@ -127,9 +153,10 @@ class Game:
         while self.run_game:
             self.screen.fill('black')
             keys = get_pressed()
-            self.ships.update(keys)
+            self.ships.update(keys, FPS, self.shells, self.screen)
             bullets.update()
             bullets.draw(self.screen)
+            self.shells.draw(self.screen)
             self.ships.draw(self.screen)
             flip()
             if keys[pygame.K_ESCAPE]:
