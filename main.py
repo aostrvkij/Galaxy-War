@@ -1,8 +1,11 @@
 from classes import *
 import pygame
+from random import randint
+import time
 from math import pi, atan
 
 if __name__ == '__main__':
+    start = time.time()
     pygame.init()
     screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h))
     size = screen.get_size()
@@ -10,13 +13,11 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     fps = 60
     bullets = list()
+    asteroids = list()
     ships = pygame.sprite.Group()
     shells = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
-    asteroid = Asteroid((50, 50), 60, 30, 100)
-    ship = Buran((0, 0))
+    ship = Buran((size[0] // 2, size[1] - 158))
     ships.add(ship)
-    ships.add(asteroid)
     while run:
         keys = pygame.key.get_pressed()
         screen.fill((0, 0, 0))
@@ -28,8 +29,14 @@ if __name__ == '__main__':
                     run = False
                 if event.key == pygame.K_SPACE:
                     pos = [ship.rect.x + ship.rect.width // 2,  ship.rect.y - ship.speed / fps - 7]
-                    bullets.append(ClassicAmmunition(pos, 300, 1, 1))
+                    bullets.append(ClassicAmmunition(pos, 500, 1, 1))
                     shells.add(bullets[-1])
+
+        if len(ships) - 1 < 100:
+            # if (time.time() - start) % 1 == 0:
+            asteroids.append(Asteroid((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100), randint(10, 30),
+                                      randint(10, 50)))
+            ships.add(asteroids)
 
         if ship.hp <= 0:
             run = False
@@ -38,9 +45,19 @@ if __name__ == '__main__':
                 for i in pygame.sprite.spritecollide(bullet, ships, False):
                     bullet.give_damage(i)
 
+        for s in ships:
+            if s.hp <= 0 or s.rect.y > size[1]:
+                ships.remove(s)
+                asteroids.remove(s)
+            if pygame.sprite.spritecollide(s, ships, False):
+                for i in pygame.sprite.spritecollide(s, ships, False):
+                    if s is not i:
+                        s.give_damage(i)
+
         shells.update(fps)
-        ships.update(keys, fps)
+        ships.update(keys, fps, size)
         shells.draw(screen)
         ships.draw(screen)
         clock.tick(fps)
         pygame.display.flip()
+    pygame.quit()

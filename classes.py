@@ -17,7 +17,7 @@ def load_image(name):
 classic_ammunition_image = load_image("Standart ammo.png")
 piercing_ammunition_image = load_image("Piersing ammo.png")
 explosive_ammunition_image = load_image("Explosive ammo.png")
-buran_image = pygame.transform.scale(load_image('buran.png'), (100, 100 * 1.5862))
+buran_image = pygame.transform.scale(load_image('buran.png'), (100, 158))
 asteroid = load_image('Asteroid.png')
 
 
@@ -27,6 +27,7 @@ class Ammunition(pygame.sprite.Sprite):
         self.image = sprite
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = pos[0], pos[1]
+        self.x, self.y = pos[0], pos[1]
         self.mask = pygame.mask.from_surface(self.image)
         self.speed = speed
         self.damage = damage
@@ -36,17 +37,25 @@ class Ammunition(pygame.sprite.Sprite):
 
     def move(self, fps):
         if self.quarter == 1:
-            self.rect.x += self.speed * (1 - self.corner) / fps
-            self.rect.y -= self.speed * self.corner / fps
+            self.x += self.speed * (1 - self.corner) / fps
+            self.y -= self.speed * self.corner / fps
+            self.rect.x = self.x
+            self.rect.y = self.y
         if self.quarter == 2:
-            self.rect.x -= self.speed * (1 - self.corner) / fps
-            self.rect.y -= self.speed * self.corner / fps
+            self.x -= self.speed * (1 - self.corner) / fps
+            self.y -= self.speed * self.corner / fps
+            self.rect.x = self.x
+            self.rect.y = self.y
         if self.quarter == 3:
-            self.rect.x -= self.speed * (1 - self.corner) / fps
-            self.rect.y += self.speed * self.corner / fps
+            self.x -= self.speed * (1 - self.corner) / fps
+            self.y += self.speed * self.corner / fps
+            self.rect.x = self.x
+            self.rect.y = self.y
         if self.quarter == 4:
-            self.rect.x += self.speed * (1 - self.corner) / fps
-            self.rect.y += self.speed * self.corner / fps
+            self.x += self.speed * (1 - self.corner) / fps
+            self.y += self.speed * self.corner / fps
+            self.rect.x = self.x
+            self.rect.y = self.y
 
     def give_damage(self, body):
         if pygame.sprite.collide_mask(self, body):
@@ -104,6 +113,7 @@ class SpaceShip(pygame.sprite.Sprite):
         self.image = sprite
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = pos[0], pos[1]
+        self.x, self.y = pos[0], pos[1]
         self.mask = pygame.mask.from_surface(self.image)
         self.name = name
         self.hp = hp
@@ -118,18 +128,26 @@ class SpaceShip(pygame.sprite.Sprite):
         self.hp -= damage
         if self.hp <= 0:
             self.kill()
-            return False
-        return True
+
+    def give_damage(self, body):
+        if pygame.sprite.collide_mask(self, body) and self.hp > 0 and body.hp > 0:
+            damage = body.hp
+            body.get_damage(self.hp)
+            self.get_damage(damage)
 
     def move(self, direction, fps):
         if direction == 'left':
-            self.rect.x -= self.speed / fps
+            self.x -= self.speed / fps
+            self.rect.x = self.x
         if direction == 'right':
-            self.rect.x += self.speed / fps
+            self.x += self.speed / fps
+            self.rect.x = self.x
         if direction == 'up':
-            self.rect.y -= self.speed / fps
+            self.y -= self.speed / fps
+            self.rect.y = self.y
         if direction == 'down':
-            self.rect.y += self.speed / fps
+            self.y += self.speed / fps
+            self.rect.y = self.y
 
     def equip_gun(self, weapon):
         self.weapon = weapon
@@ -137,48 +155,58 @@ class SpaceShip(pygame.sprite.Sprite):
     def equip_armour(self, armour):
         self.armor = armour
 
-    def update(self, keys, fps):
-        if keys[pygame.K_w]:
+    def update(self, keys, fps, size):
+        if keys[pygame.K_w] and self.rect.y > 0:
             self.move('up', fps)
-        if keys[pygame.K_s]:
+        if keys[pygame.K_s] and self.rect.y + self.rect.height < size[1]:
             self.move('down', fps)
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] and self.rect.x > 0:
             self.move('left', fps)
-        if keys[pygame.K_d]:
+        if keys[pygame.K_d] and self.rect.x + self.rect.width < size[0]:
             self.move('right', fps)
-
 
 class Buran(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Buran', pos, 100, 120, 1, buran_image)
+        super().__init__('Buran', pos, 100, 150, 1, buran_image)
 
 
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self, pos, speeed, radius, hp):
         super().__init__()
-        self.image = asteroid
+        self.image = pygame.transform.scale(asteroid, (2 * radius, 2 * radius))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = pos[0], pos[1]
+        self.x, self.y = pos[0], pos[1]
         self.mask = pygame.mask.from_surface(self.image)
         self.speed = speeed
         self.hp = hp
 
     def move(self, direction, fps):
         if direction == 'left':
-            self.rect.x -= self.speed / fps
+            self.x -= self.speed / fps
+            self.rect.x = self.x
         if direction == 'right':
-            self.rect.x += self.speed / fps
+            self.x += self.speed / fps
+            self.rect.x = self.x
         if direction == 'up':
-            self.rect.y -= self.speed / fps
+            self.y -= self.speed / fps
+            self.rect.y = self.y
         if direction == 'down':
-            self.rect.y += self.speed / fps
+            self.y += self.speed / fps
+            self.rect.y = self.y
 
     def get_damage(self, damage):
         self.hp -= damage
         if self.hp <= 0:
             self.kill()
 
-    def update(self, keys, fps):
+    def give_damage(self, body):
+        if pygame.sprite.collide_mask(self, body) and self.hp > 0 and body.hp > 0:
+            damage = body.hp
+            body.get_damage(self.hp)
+            self.get_damage(damage)
+
+    def update(self, keys, fps, size):
         self.move('down', fps)
 
 
