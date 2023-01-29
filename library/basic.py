@@ -86,6 +86,10 @@ class SpaceShip(pygame.sprite.Sprite):
         hp_rect = self.hp_none.get_rect()
         hp_rect.width, hp_rect.height = SCREEN_WIDTH * 0.025, SCREEN_WIDTH * 0.025
         hp_rect.x, hp_rect.y = SCREEN_WIDTH // 100 * 0.05, SCREEN_HEIGHT - SCREEN_WIDTH // 100 * 0.05 - hp_rect.height
+        pygame.draw.rect(screen, (65, 65, 65), ((SCREEN_WIDTH * 0.03, SCREEN_HEIGHT * 0.96),
+                                                (SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.03)))
+        pygame.draw.rect(screen, (255, 0, 0), ((SCREEN_WIDTH * 0.03, SCREEN_HEIGHT * 0.96),
+                                         (SCREEN_WIDTH * 0.2 / 100 * self.hp, SCREEN_HEIGHT * 0.03)))
         if self.hp < 30:
             hp_image = pygame.transform.scale(self.hp_none, (hp_rect.width, hp_rect.height))
             screen.blit(hp_image, hp_rect)
@@ -95,10 +99,6 @@ class SpaceShip(pygame.sprite.Sprite):
         elif 70 <= self.hp:
             hp_image = pygame.transform.scale(self.hp_full, (hp_rect.width, hp_rect.height))
             screen.blit(hp_image, hp_rect)
-        if self.hp > 0:
-                pygame.draw.rect(screen, 'red', ((SCREEN_WIDTH * 0.025, SCREEN_HEIGHT * 0.96),
-                                             (SCREEN_WIDTH * 0.2 // 100 * self.hp, SCREEN_HEIGHT * 0.04)))
-
 
     def update(self, keys, fps, group, screen):
         if pygame.sprite.spritecollide(self, group, False):
