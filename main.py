@@ -1,4 +1,4 @@
-from ships import *
+from classes import *
 import pygame
 from math import pi, atan
 
@@ -9,19 +9,14 @@ if __name__ == '__main__':
     run = True
     clock = pygame.time.Clock()
     fps = 60
-    ship = SpaceShip('buran', [0, 0], 100, 300, 1, 1, 'green')
-    a = 0
-    s = 0
-    d = 0
-    b = 0
-    mouse_pos = (0, 0)
     bullets = list()
     ships = pygame.sprite.Group()
     shells = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
-    ships.add(ship)
     asteroid = Asteroid((50, 50), 60, 30, 100)
-    asteroids.add(asteroid)
+    ship = Buran((0, 0))
+    ships.add(ship)
+    ships.add(asteroid)
     while run:
         keys = pygame.key.get_pressed()
         screen.fill((0, 0, 0))
@@ -32,24 +27,20 @@ if __name__ == '__main__':
                 if event.key == pygame.K_ESCAPE:
                     run = False
                 if event.key == pygame.K_SPACE:
-                    pos = [ship.rect.x, ship.rect.y]
-                    try:
-                        bullets.append(ClassicAmmunition(pos, 240, 1, 1))
-                    except ZeroDivisionError:
-                        bullets.append(ClassicAmmunition(pos, 240, 1, 1))
+                    pos = [ship.rect.x + ship.rect.width // 2,  ship.rect.y - ship.speed / fps - 7]
+                    bullets.append(ClassicAmmunition(pos, 300, 1, 1))
                     shells.add(bullets[-1])
-                    b = 1
 
-        if b:
-            for bullet in bullets:
-                bullet.move(fps)
         if ship.hp <= 0:
             run = False
-        ships.update(keys, fps, shells)
-        asteroids.update(shells)
-        ships.draw(screen)
+        for bullet in shells:
+            if pygame.sprite.spritecollide(bullet, ships, False):
+                for i in pygame.sprite.spritecollide(bullet, ships, False):
+                    bullet.give_damage(i)
+
+        shells.update(fps)
+        ships.update(keys, fps)
         shells.draw(screen)
-        asteroids.draw(screen)
+        ships.draw(screen)
         clock.tick(fps)
         pygame.display.flip()
-
