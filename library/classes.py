@@ -3,6 +3,7 @@ import sys
 
 import pygame
 
+import library
 
 def load_image(name):
     fullname = os.path.join('Images', 'data', name)
@@ -27,7 +28,7 @@ hp_full = load_image('hp_full.png')
 
 
 class Ammunition(pygame.sprite.Sprite):
-    def __init__(self, pos, speed, damage, sprite, info_id, quarter, corner):
+    def __init__(self, pos, speed, damage, sprite, info_id, quarter, corner, owner):
         super().__init__()
         self.image = sprite
         self.rect = self.image.get_rect()
@@ -39,6 +40,7 @@ class Ammunition(pygame.sprite.Sprite):
         self.info_id = info_id
         self.quarter = quarter
         self.corner = corner
+        self.owner = owner
 
     def move(self, fps):
         if self.quarter == 1:
@@ -64,6 +66,9 @@ class Ammunition(pygame.sprite.Sprite):
 
     def give_damage(self, body):
         if pygame.sprite.collide_mask(self, body):
+            if (type(body) == library.classes.AsteroidIron or type(body) == library.classes.AsteroidGold) \
+                    and type(self.owner) == library.classes.Buran:
+                self.owner.money += body.price
             body.get_damage(self.damage)
             self.kill()
 
@@ -74,8 +79,32 @@ class Ammunition(pygame.sprite.Sprite):
 
 
 class ClassicAmmunition(Ammunition):
-    def __init__(self, pos, speed, quarter, corner):
-        super().__init__(pos, speed, 3, classic_ammunition_image, 1, quarter, corner)
+    def __init__(self, pos, speed, quarter, corner, owner):
+        super().__init__(pos, speed, 3, classic_ammunition_image, 1, quarter, corner, owner)
+
+
+class PiercingAmmunition(Ammunition):
+    def __init__(self, pos, speed, quarter, corner, owner, k):
+        super().__init__(pos, speed, 3, piercing_ammunition_image, 1, quarter, corner, owner)
+        self.ratio = k
+
+    def give_damage(self, body):
+        if pygame.sprite.collide_mask(self, body):
+            if (type(body) == library.classes.AsteroidIron or type(body) == library.classes.AsteroidGold) \
+                    and type(self.owner) == library.classes.Buran:
+                self.owner.money += body.price
+            body.get_damage(self.damage)
+            self.ratio -= 1
+            if self.ratio <= 0:
+                self.kill()
+
+
+class ExplosiveAmmunition(Ammunition):
+    def __init__(self, pos, speed, quarter, corner, owner, radios):
+        super().__init__(pos, speed, 3, explosive_ammunition_image, 1, quarter, corner, owner)
+        self.radios = radios
+
+    # mast make boom!!!
 
 
 class Weapon:
@@ -174,15 +203,16 @@ class SpaceShip(pygame.sprite.Sprite):
 class Buran(SpaceShip):
     def __init__(self, pos):
         super().__init__('Buran', pos, 100, 150, 1, buran_image)
+        self.money = 0
 
     def draw_hp(self, screen, size):
-        hp_rect = pygame.transform.scale(hp_none, (size[0] * 0.025, size[0] * 0.025)).get_rect()
-        hp_rect.width, hp_rect.height = size[0] * 0.025, size[0] * 0.025
-        hp_rect.x, hp_rect.y = size[0] // 100 * 0.05, size[1] - size[0] // 100 * 0.05 - hp_rect.height
-        pygame.draw.rect(screen, (65, 65, 65), ((size[0] * 0.03, size[1] * 0.96),
-                                                (size[0] * 0.2, size[1] * 0.03)))
-        pygame.draw.rect(screen, (255, 0, 0), ((size[0] * 0.03, size[1] * 0.96),
-                                         (size[0] * 0.2 / 100 * self.hp, size[1] * 0.03)))
+        hp_rect = pygame.transform.scale(hp_none, (int(size[0] * 0.025), int(size[0] * 0.025))).get_rect()
+        hp_rect.width, hp_rect.height = int(size[0] * 0.025), int(size[0] * 0.025)
+        hp_rect.x, hp_rect.y = int(size[0] // 100 * 0.05), int(size[1] - size[0] // 100 * 0.05 - hp_rect.height)
+        pygame.draw.rect(screen, (65, 65, 65), ((int(size[0] * 0.03), int(size[1] * 0.96)),
+                                                (int(size[0] * 0.2), int(size[1] * 0.03))))
+        pygame.draw.rect(screen, (255, 0, 0), ((int(size[0] * 0.03), int(size[1] * 0.96)),
+                                         (int(size[0] * 0.2 / 100 * self.hp), int(size[1] * 0.03))))
         if self.hp < 25:
             hp_image = pygame.transform.scale(hp_none, (hp_rect.width, hp_rect.height))
             screen.blit(hp_image, hp_rect)
@@ -193,15 +223,38 @@ class Buran(SpaceShip):
             hp_image = pygame.transform.scale(hp_full, (hp_rect.width, hp_rect.height))
             screen.blit(hp_image, hp_rect)
 
+    def give_damage(self, body):
+        if pygame.sprite.collide_mask(self, body) and self.hp > 0 and body.hp > 0:
+            damage = body.hp
+            if (type(body) == library.classes.AsteroidIron
+                    or type(body) == library.classes.AsteroidGold):
+                self.money += body.price * body.hp
+            body.get_damage(self.hp)
+            self.get_damage(damage)
+
     def update(self, keys, fps, size, screen):
-        if keys[pygame.K_w] and self.rect.y > 0:
-            self.move('up', fps)
-        if keys[pygame.K_s] and self.rect.y + self.rect.height < size[1] * 0.96 - 10:
-            self.move('down', fps)
-        if keys[pygame.K_a] and self.rect.x > 0:
-            self.move('left', fps)
-        if keys[pygame.K_d] and self.rect.x + self.rect.width < size[0]:
-            self.move('right', fps)
+        if bool(list(filter(lambda x: x != 0, keys))):
+            if keys[pygame.K_w] and self.rect.y > 0:
+                self.move('up', fps)
+
+            if keys[pygame.K_s] and self.rect.y + self.rect.height < size[1] * 0.96 - 10:
+                self.move('down', fps)
+                self.image = buran_image
+                self.rect = self.image.get_rect()
+                self.rect.x, self.rect.y = self.x, self.y
+                self.mask = pygame.mask.from_surface(self.image)
+
+            if keys[pygame.K_a] and self.rect.x > 0:
+                self.move('left', fps)
+
+            if keys[pygame.K_d] and self.rect.x + self.rect.width < size[0]:
+                self.move('right', fps)
+        else:
+            self.image = buran_image
+            self.rect = self.image.get_rect()
+            self.rect.x, self.rect.y = self.x, self.y
+            self.mask = pygame.mask.from_surface(self.image)
+
         self.draw_hp(screen, size)
 
 
@@ -234,9 +287,17 @@ class Asteroid(pygame.sprite.Sprite):
         self.hp -= damage
         if self.hp <= 0:
             self.kill()
-        if self.hp > 5:
-            self.x, self.y = self.rect.x + ((self.rect.width - 2 * self.hp) // 2),  self.rect.y + ((self.rect.width - 2 * self.hp) // 2)
+        if self.hp >= 10:
+            self.x, self.y = self.rect.x + ((self.rect.width - 2 * self.hp) // 2), \
+                             self.rect.y + ((self.rect.width - 2 * self.hp) // 2)
             self.image = pygame.transform.scale(self.image, (2 * self.hp, 2 * self.hp))
+            self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image)
+            self.rect.x, self.rect.y = self.x, self.y
+        else:
+            self.x, self.y = self.rect.x + ((self.rect.width - 2 * 10) // 2), \
+                             self.rect.y + ((self.rect.width - 2 * 10) // 2)
+            self.image = pygame.transform.scale(self.image, (2 * 10, 2 * 10))
             self.rect = self.image.get_rect()
             self.mask = pygame.mask.from_surface(self.image)
             self.rect.x, self.rect.y = self.x, self.y
@@ -255,14 +316,12 @@ class AsteroidIron(Asteroid):
     def __init__(self, pos, speeed, radius):
         super().__init__(pos, speeed, radius)
         self.image = pygame.transform.scale(asteroid_iron, (2 * radius, 2 * radius))
+        self.price = 1
 
-    def get_damage(self, damage):
-        self.hp -= damage
-        if self.hp <= 0:
-            self.kill()
-        if self.hp > 5:
-            self.x, self.y = self.rect.x + ((self.rect.width - 2 * self.hp) // 2),  self.rect.y + ((self.rect.width - 2 * self.hp) // 2)
-            self.image = pygame.transform.scale(self.image, (2 * self.hp, 2 * self.hp))
-            self.rect = self.image.get_rect()
-            self.mask = pygame.mask.from_surface(self.image)
-            self.rect.x, self.rect.y = self.x, self.y
+
+class AsteroidGold(Asteroid):
+    def __init__(self, pos, speeed, radius):
+        super().__init__(pos, speeed, radius)
+        self.image = pygame.transform.scale(asteroid_gold, (2 * radius, 2 * radius))
+        self.price = 10
+
