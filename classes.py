@@ -19,6 +19,8 @@ piercing_ammunition_image = load_image("Piersing ammo.png")
 explosive_ammunition_image = load_image("Explosive ammo.png")
 buran_image = pygame.transform.scale(load_image('buran.png'), (100, 158))
 asteroid = load_image('Asteroid.png')
+asteroid_iron = load_image('Asteroid_Iron.png')
+asteroid_gold = load_image('Asteroid_Gold.png')
 
 
 class Ammunition(pygame.sprite.Sprite):
@@ -165,21 +167,22 @@ class SpaceShip(pygame.sprite.Sprite):
         if keys[pygame.K_d] and self.rect.x + self.rect.width < size[0]:
             self.move('right', fps)
 
+
 class Buran(SpaceShip):
     def __init__(self, pos):
         super().__init__('Buran', pos, 100, 150, 1, buran_image)
 
 
 class Asteroid(pygame.sprite.Sprite):
-    def __init__(self, pos, speeed, radius, hp):
+    def __init__(self, pos, speeed, radius):
         super().__init__()
         self.image = pygame.transform.scale(asteroid, (2 * radius, 2 * radius))
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect.x, self.rect.y = pos[0], pos[1]
         self.x, self.y = pos[0], pos[1]
-        self.mask = pygame.mask.from_surface(self.image)
         self.speed = speeed
-        self.hp = hp
+        self.hp = radius
 
     def move(self, direction, fps):
         if direction == 'left':
@@ -199,6 +202,12 @@ class Asteroid(pygame.sprite.Sprite):
         self.hp -= damage
         if self.hp <= 0:
             self.kill()
+        if self.hp > 5:
+            self.x, self.y = self.rect.x + ((self.rect.width - 2 * self.hp) // 2),  self.rect.y + ((self.rect.width - 2 * self.hp) // 2)
+            self.image = pygame.transform.scale(self.image, (2 * self.hp, 2 * self.hp))
+            self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image)
+            self.rect.x, self.rect.y = self.x, self.y
 
     def give_damage(self, body):
         if pygame.sprite.collide_mask(self, body) and self.hp > 0 and body.hp > 0:
@@ -210,4 +219,18 @@ class Asteroid(pygame.sprite.Sprite):
         self.move('down', fps)
 
 
+class AsteroidIron(Asteroid):
+    def __init__(self, pos, speeed, radius):
+        super().__init__(pos, speeed, radius)
+        self.image = pygame.transform.scale(asteroid_iron, (2 * radius, 2 * radius))
 
+    def get_damage(self, damage):
+        self.hp -= damage
+        if self.hp <= 0:
+            self.kill()
+        if self.hp > 5:
+            self.x, self.y = self.rect.x + ((self.rect.width - 2 * self.hp) // 2),  self.rect.y + ((self.rect.width - 2 * self.hp) // 2)
+            self.image = pygame.transform.scale(self.image, (2 * self.hp, 2 * self.hp))
+            self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image)
+            self.rect.x, self.rect.y = self.x, self.y

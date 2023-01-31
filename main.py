@@ -27,15 +27,23 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = False
-                if event.key == pygame.K_SPACE:
-                    pos = [ship.rect.x + ship.rect.width // 2,  ship.rect.y - ship.speed / fps - 7]
-                    bullets.append(ClassicAmmunition(pos, 500, 1, 1))
-                    shells.add(bullets[-1])
+                # if event.key == pygame.K_SPACE:
+                #     pos = [ship.rect.x + ship.rect.width // 2,  ship.rect.y - ship.speed / fps - 7]
+                #     bullets.append(ClassicAmmunition(pos, 500, 1, 1))
+                #     shells.add(bullets[-1])
 
-        if len(ships) - 1 < 100:
+        if len(ships) - 1 < 70:
             # if (time.time() - start) % 1 == 0:
-            asteroids.append(Asteroid((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100), randint(10, 30),
-                                      randint(10, 50)))
+            asteroids.append(Asteroid((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
+                                      randint(10, 30)))
+            asteroids.append(Asteroid((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
+                                      randint(10, 30)))
+            asteroids.append(Asteroid((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
+                                      randint(10, 30)))
+            asteroids.append(Asteroid((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
+                                      randint(10, 30)))
+            asteroids.append(AsteroidIron((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
+                                          randint(10, 30)))
             ships.add(asteroids)
 
         if ship.hp <= 0:
