@@ -5,7 +5,7 @@ from library.basic import Game
 # from library.buttons import Button
 def run():
     pygame.init()
-    game = Game(screen, SCREEN_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT)
+    game = Game(screen)
     game.menu()
 
 
