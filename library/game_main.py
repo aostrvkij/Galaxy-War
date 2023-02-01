@@ -15,7 +15,11 @@ def main(FPS, count_asteroid, count_enemy):
     ships = pygame.sprite.Group()
     shells = pygame.sprite.Group()
     ship = Buran((size[0] // 2, size[1] - 158))
+    enemy = EnemyShip((500, 500))
     ships.add(ship)
+    ships.add(EnemyShip((500, 500)))
+    ships.add(EnemyShip((200, 500)))
+
     while run:
         keys = pygame.key.get_pressed()
         screen.fill((0, 0, 0))

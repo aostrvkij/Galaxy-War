@@ -151,6 +151,7 @@ class SpaceShip(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.name = name
         self.hp = hp
+        self.full_hp = self.hp
         self.speed = speed
         self.info_id = info_id
         self.weapon = weapon
@@ -212,7 +213,7 @@ class Buran(SpaceShip):
         pygame.draw.rect(screen, (65, 65, 65), ((int(size[0] * 0.03), int(size[1] * 0.96)),
                                                 (int(size[0] * 0.2), int(size[1] * 0.03))))
         pygame.draw.rect(screen, (255, 0, 0), ((int(size[0] * 0.03), int(size[1] * 0.96)),
-                                         (int(size[0] * 0.2 / 100 * self.hp), int(size[1] * 0.03))))
+                                         (int(size[0] * 0.2 / self.full_hp * self.hp), int(size[1] * 0.03))))
         if self.hp < 25:
             hp_image = pygame.transform.scale(hp_none, (hp_rect.width, hp_rect.height))
             screen.blit(hp_image, hp_rect)
@@ -254,7 +255,54 @@ class Buran(SpaceShip):
             self.rect = self.image.get_rect()
             self.rect.x, self.rect.y = self.x, self.y
             self.mask = pygame.mask.from_surface(self.image)
+        self.draw_hp(screen, size)
 
+
+class EnemyShip(SpaceShip):
+    def __init__(self, pos):
+        super().__init__('Enemy', pos, 100, 150, 1, buran_image)
+        self.image = pygame.Surface((100, 100))
+        self.image.fill('white')
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = pos[0], pos[1]
+        self.hp = 100
+        self.full_hp = 100
+
+    def draw_hp(self, screen, size):
+        pygame.draw.rect(screen, (255, 0, 0), (self.rect.x, self.rect.y - self.rect.height * 0.15,
+                                               self.rect.width / self.full_hp * self.hp, self.rect.height * 0.1))
+
+    def give_damage(self, body):
+        if pygame.sprite.collide_mask(self, body) and self.hp > 0 and body.hp > 0:
+            damage = body.hp
+            if (type(body) == library.classes.AsteroidIron
+                    or type(body) == library.classes.AsteroidGold):
+                self.money += body.price * body.hp
+            body.get_damage(self.hp)
+            self.get_damage(damage)
+
+    def update(self, keys, fps, size, screen):
+        if bool(list(filter(lambda x: x != 0, keys))):
+            if keys[pygame.K_UP] and self.rect.y > 0:
+                self.move('up', fps)
+
+            if keys[pygame.K_DOWN] and self.rect.y + self.rect.height < size[1] * 0.96 - 10:
+                self.move('down', fps)
+                self.image = buran_image
+                self.rect = self.image.get_rect()
+                self.rect.x, self.rect.y = self.x, self.y
+                self.mask = pygame.mask.from_surface(self.image)
+
+            if keys[pygame.K_LEFT] and self.rect.x > 0:
+                self.move('left', fps)
+
+            if keys[pygame.K_RIGHT] and self.rect.x + self.rect.width < size[0]:
+                self.move('right', fps)
+        else:
+            self.image = buran_image
+            self.rect = self.image.get_rect()
+            self.rect.x, self.rect.y = self.x, self.y
+            self.mask = pygame.mask.from_surface(self.image)
         self.draw_hp(screen, size)
 
 
