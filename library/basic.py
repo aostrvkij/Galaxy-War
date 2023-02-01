@@ -28,7 +28,7 @@ class Game:
 
     def game(self):
         self.run_menu, self.run_game, self.run_settings, self.run_library = False, True, False, False
-        game_main.main(FPS, 70, 0)
+        game_main.main(FPS, 70, 0, [150, 100, 0, 1, None, None])
         self.menu()
 
     def settings(self):

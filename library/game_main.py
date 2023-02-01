@@ -4,7 +4,7 @@ from random import randint
 import time
 
 
-def main(FPS, count_asteroid, count_enemy):
+def main(FPS, count_asteroid, count_enemy, data_ship):
     start = time.time()
     pygame.init()
     screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h))
@@ -14,12 +14,8 @@ def main(FPS, count_asteroid, count_enemy):
     fps = FPS
     ships = pygame.sprite.Group()
     shells = pygame.sprite.Group()
-    ship = Buran((size[0] // 2, size[1] - 158))
-    enemy = EnemyShip((500, 500))
+    ship = Buran((size[0] // 2, size[1] - 158), *data_ship)
     ships.add(ship)
-    ships.add(EnemyShip((500, 500)))
-    ships.add(EnemyShip((200, 500)))
-
     while run:
         keys = pygame.key.get_pressed()
         screen.fill((0, 0, 0))
@@ -31,20 +27,20 @@ def main(FPS, count_asteroid, count_enemy):
                     run = False
                 if event.key == pygame.K_SPACE:
                     pos = [ship.rect.x + ship.rect.width // 2,  ship.rect.y - ship.speed / fps - 7]
-                    shells.add(PiercingAmmunition(pos, 500, 1, 1, ship, 5))
+                    shells.add(ExplosiveAmmunition(pos, 500, 1, 1, ship, 20))
 
         if len(ships) - 1 < count_asteroid:
             # if (time.time() - start) % 1 == 0:
             x = randint(1, 100)
             if 1 <= x <= 85:
                 ships.add(Asteroid((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
-                                            randint(25, 50)))
+                                   randint(25, 50)))
             elif 86 <= x <= 95:
                 ships.add(AsteroidIron((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
-                                            randint(15, 35)))
+                                       randint(15, 35)))
             elif 96 <= x <= 100:
                 ships.add(AsteroidGold((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
-                                            randint(10, 20)))
+                                       randint(10, 20)))
 
         if ship.hp <= 0:
             run = False
@@ -63,8 +59,9 @@ def main(FPS, count_asteroid, count_enemy):
 
         shells.draw(screen)
         ships.draw(screen)
-        # print(ship.money)
         shells.update(fps)
         ships.update(keys, fps, size, screen)
         clock.tick(fps)
         pygame.display.flip()
+    print(f'money - {ship.money}')
+    print(f'score - {ship.score * int(time.time() - start)}')
