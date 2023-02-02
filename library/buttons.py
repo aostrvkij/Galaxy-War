@@ -20,7 +20,7 @@ class Button(pygame.sprite.Sprite):
                     if self.action == 'newgame':
                         game.game()
                     if self.action == 'congame':
-                        pass
+                        game.run_pause = True
                     if self.action == 'settgame':
                         game.settings()
                     if self.action == 'menu':
@@ -28,4 +28,5 @@ class Button(pygame.sprite.Sprite):
                     if self.action == 'library':
                         game.library()
                     if self.action == 'exit':
-                        game.run_menu, game.run_game, game.run_settings, game.run_library = False, False, False, False
+                        game.run_menu, game.run_game, game.run_settings, game.run_library, game.run_congame = \
+                            False, False, False, False, False

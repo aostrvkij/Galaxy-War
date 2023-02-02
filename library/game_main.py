@@ -4,8 +4,9 @@ from random import randint
 import time
 
 
-def main(FPS, count_asteroid, count_enemy, data_ship):
+def main(FPS, count_asteroid, count_enemy, data_ship, game):
     start = time.time()
+    pusk = time.time()
     pygame.init()
     screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h))
     size = screen.get_size()
@@ -24,12 +25,13 @@ def main(FPS, count_asteroid, count_enemy, data_ship):
                 run = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    run = False
+                    if not game.pause_menu():
+                        run = False
                 if event.key == pygame.K_SPACE:
                     pos = [ship.rect.x + ship.rect.width // 2,  ship.rect.y - ship.speed / fps - 7]
-                    shells.add(ExplosiveAmmunition(pos, 500, 1, 1, ship, 20))
+                    shells.add(ExplosiveAmmunition(pos, 500, 1, 1, ship, 200))
 
-        if len(ships) - 1 < count_asteroid:
+        if len(ships) - 1 - count_enemy < count_asteroid:
             # if (time.time() - start) % 1 == 0:
             x = randint(1, 100)
             if 1 <= x <= 85:
@@ -42,6 +44,13 @@ def main(FPS, count_asteroid, count_enemy, data_ship):
                 ships.add(AsteroidGold((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
                                        randint(10, 20)))
 
+        if len(ships) - 1 - count_asteroid < count_enemy and (time.time() - pusk) >= 3:
+            x = randint(1, 100)
+            print(x)
+            if 91 <= x <= 100:
+                ships.add(Titan34D((randint(int(ship.x) - 20, int(ship.x) + 20), -100)))
+            pusk = time.time()
+
         if ship.hp <= 0:
             run = False
         for bullet in shells:
@@ -50,7 +59,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship):
                     bullet.give_damage(i)
 
         for s in ships:
-            if s.hp <= 0 or s.rect.y > size[1]:
+            if s.rect.y > size[1]:
                 ships.remove(s)
             if pygame.sprite.spritecollide(s, ships, False):
                 for i in pygame.sprite.spritecollide(s, ships, False):
