@@ -29,7 +29,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                         run = False
                 if event.key == pygame.K_SPACE:
                     pos = [ship.rect.x + ship.rect.width // 2,  ship.rect.y - ship.speed / fps - 7]
-                    shells.add(ExplosiveAmmunition(pos, 500, 1, 1, ship, 200))
+                    shells.add(ClassicAmmunition(pos, 500, 1, 1, ship))
 
         if len(ships) - 1 - count_enemy < count_asteroid:
             # if (time.time() - start) % 1 == 0:

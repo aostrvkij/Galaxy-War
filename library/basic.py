@@ -30,6 +30,9 @@ class Game:
                 if e.type == pygame.QUIT:
                     self.run_menu, self.run_game, self.run_settings, self.run_library, self.run_congame = \
                         False, False, False, False, False
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_ESCAPE:
+                        pygame.quit()
 
     def game(self):
         self.run_menu, self.run_game, self.run_settings, self.run_library, self.run_congame = \
@@ -45,13 +48,13 @@ class Game:
             self.settings_btn.update(self)
             self.settings_btn.draw(self.screen)
             flip()
-            keys = get_pressed()
-            if keys[pygame.K_ESCAPE]:
-                self.menu()
             for e in event.get():
                 if e.type == pygame.QUIT:
                     self.run_menu, self.run_game, self.run_settings, self.run_library, self.run_congame = \
                         False, False, False, False, False
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_ESCAPE:
+                        self.menu()
 
     def game_over_menu(self):
         pass
@@ -64,16 +67,17 @@ class Game:
             self.congame_btns.update(self)
             self.congame_btns.draw(self.screen)
             flip()
-            keys = get_pressed()
             if self.run_pause:
                 self.run_pause = None
                 return True
-            if keys[pygame.K_ESCAPE]:
-                pass
+
             for e in event.get():
                 if e.type == pygame.QUIT:
                     self.run_menu, self.run_game, self.run_settings, self.run_library, self.run_congame = \
                         False, False, False, False, False
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_ESCAPE:
+                        return True
 
     def library(self):
         self.run_menu, self.run_game, self.run_settings, self.run_library, self.run_congame = \
@@ -83,10 +87,11 @@ class Game:
             self.libr_btns.update(self)
             self.libr_btns.draw(self.screen)
             flip()
-            keys = get_pressed()
-            if keys[pygame.K_ESCAPE]:
-                self.menu()
+
             for e in event.get():
                 if e.type == pygame.QUIT:
                     self.run_menu, self.run_game, self.run_settings, self.run_library, self.run_congame = \
                         False, False, False, False, False
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_ESCAPE:
+                        self.menu()
