@@ -17,15 +17,22 @@ def load_image(name):
     return image
 
 
-classic_ammunition_image = load_image("Standart ammo.png")
-piercing_ammunition_image = load_image("Piersing ammo.png")
-explosive_ammunition_image = load_image("Explosive ammo.png")
-buran_images = [[pygame.transform.scale(load_image('buran.png'), (50, 79)),
-                 pygame.transform.scale(load_image('buran right.png'), (50, 79)),
-                 pygame.transform.scale(load_image('buran left.png'), (50, 79))],
-                [pygame.transform.scale(load_image('buran forward.png'), (50, 79)),
-                 pygame.transform.scale(load_image('buran right forward.png'), (50, 79)),
-                 pygame.transform.scale(load_image('buran left forward.png'), (50, 79))]]
+classic_ammunition_image = pygame.transform.scale(load_image("Standart ammo.png"), (2, 5))
+piercing_ammunition_image = pygame.transform.scale(load_image("Piersing ammo.png"), (2, 5))
+explosive_ammunition_image = pygame.transform.scale(load_image("Explosive ammo.png"), (2, 5))
+buran_images = [[[pygame.transform.scale(load_image('buran.png'), (50, 79)),
+                  pygame.transform.scale(load_image('buran right.png'), (50, 79)),
+                  pygame.transform.scale(load_image('buran left.png'), (50, 79))],
+                 [pygame.transform.scale(load_image('buran forward.png'), (50, 79)),
+                  pygame.transform.scale(load_image('buran right forward.png'), (50, 79)),
+                  pygame.transform.scale(load_image('buran left forward.png'), (50, 79))]],
+                [[pygame.transform.scale(load_image('buran gun1.png'), (50, 79)),
+                  pygame.transform.scale(load_image('buran right gun1.png'), (50, 79)),
+                  pygame.transform.scale(load_image('buran left gun1.png'), (50, 79))],
+                 [pygame.transform.scale(load_image('buran forward gun1.png'), (50, 79)),
+                  pygame.transform.scale(load_image('buran right forward gun1.png'), (50, 79)),
+                  pygame.transform.scale(load_image('buran left forward gun1.png'), (50, 79))]]
+                ]
 space_shuttle = [pygame.transform.scale(load_image('space shuttle.png'), (50, 79))]
 titan34D = pygame.transform.scale(load_image('titan 34D.png'), (100, 152))
 asteroid = load_image('Asteroid.png')
@@ -38,7 +45,7 @@ boom = load_image('boom.png')
 
 
 class Ammunition(pygame.sprite.Sprite):
-    def __init__(self, pos, speed, damage, sprite, info_id, quarter, corner, owner):
+    def __init__(self, pos, speed, damage, sprite, quarter, corner, owner):
         super().__init__()
         self.image = sprite
         self.rect = self.image.get_rect()
@@ -47,7 +54,6 @@ class Ammunition(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.speed = speed
         self.damage = damage
-        self.info_id = info_id
         self.quarter = quarter
         self.corner = corner
         self.owner = owner
@@ -76,8 +82,8 @@ class Ammunition(pygame.sprite.Sprite):
 
     def give_damage(self, body):
         if pygame.sprite.collide_mask(self, body):
-            if (type(body) == library.classes.AsteroidIron or type(body) == library.classes.AsteroidGold) \
-                    and type(self.owner) == library.classes.Buran:
+            if (type(body) is library.classes.AsteroidIron or type(body) is library.classes.AsteroidGold) \
+                    and type(self.owner) is library.classes.Buran:
                 self.owner.money += body.price
             body.get_damage(self.damage)
             self.kill()
@@ -90,12 +96,12 @@ class Ammunition(pygame.sprite.Sprite):
 
 class ClassicAmmunition(Ammunition):
     def __init__(self, pos, speed, quarter, corner, owner):
-        super().__init__(pos, speed, 3, classic_ammunition_image, 1, quarter, corner, owner)
+        super().__init__(pos, speed, 3, classic_ammunition_image, quarter, corner, owner)
 
 
 class PiercingAmmunition(Ammunition):
     def __init__(self, pos, speed, quarter, corner, owner, k):
-        super().__init__(pos, speed * 1.25, 5, piercing_ammunition_image, 1, quarter, corner, owner)
+        super().__init__(pos, speed * 1.25, 5, piercing_ammunition_image, quarter, corner, owner)
         self.ratio = k
 
     def give_damage(self, body):
@@ -111,7 +117,7 @@ class PiercingAmmunition(Ammunition):
 
 class ExplosiveAmmunition(Ammunition):
     def __init__(self, pos, speed, quarter, corner, owner, radios):
-        super().__init__(pos, speed * 0.75, 10, explosive_ammunition_image, 1, quarter, corner, owner)
+        super().__init__(pos, speed * 0.75, 10, explosive_ammunition_image, quarter, corner, owner)
         self.radios = radios
         self.start = 0
 
@@ -145,21 +151,58 @@ class ExplosiveAmmunition(Ammunition):
 
 
 class Weapon:
-    def __init__(self, name, recharge, store_size, rate_of_fire, ammunition_type, info_id):
+    def __init__(self, name, recharge, store_size, rate_of_fire, ammunition_type, pos, sprite_id, baf_speed,
+                 ammunition_cof):
         self.name = name
         self.recharge = recharge
         self.store_size = store_size
         self.rate_of_fire = rate_of_fire
         self.ammunition_type = ammunition_type
-        self.info_id = info_id
+        self.ammunition_cof = ammunition_cof
+        self.pos = pos
+        self.sprite_id = sprite_id
+        self.baf_speed = baf_speed
+        self.star_fire = time()
+
+    def fire(self, group, ship):
+        if time() - self.star_fire >= self.rate_of_fire:
+            self.star_fire = time()
+
+            if self.ammunition_type == 2:
+                group.add(PiercingAmmunition((ship.rect.x + self.pos[0], ship.rect.y + self.pos[1]),
+                                             500 * self.baf_speed, 1, 1, ship, self.ammunition_cof))
+
+            elif self.ammunition_type == 3:
+                group.add(ExplosiveAmmunition((ship.rect.x + self.pos[0], ship.rect.y + self.pos[1]),
+                                              500 * self.baf_speed, 1, 1, ship, self.ammunition_cof))
+
+
+class MachineGun(Weapon):
+    def __init__(self):
+        super().__init__('пулемёт', 3, 100, 0.05, 1, [35, 6], 1, 1.1, 0)
+        self.pos2 = [15, 6]
+
+    def fire(self, group, ship, quarter):
+        if time() - self.star_fire >= self.rate_of_fire:
+            self.star_fire = time()
+            if self.ammunition_type == 1:
+                if quarter == 1:
+                    group.add(ClassicAmmunition((ship.rect.x + self.pos[0], ship.rect.y - self.pos[1]),
+                                                500 * self.baf_speed, quarter, 1, ship))
+                    group.add(ClassicAmmunition((ship.rect.x + self.pos2[0], ship.rect.y - self.pos[1]),
+                                                500 * self.baf_speed, quarter, 1, ship))
+                if quarter == 4:
+                    group.add(ClassicAmmunition((ship.rect.x + self.pos[0], ship.rect.y + ship.rect.height),
+                                                500 * self.baf_speed, quarter, 1, ship))
+                    group.add(ClassicAmmunition((ship.rect.x + self.pos2[0], ship.rect.y + ship.rect.height),
+                                                500 * self.baf_speed, quarter, 1, ship))
 
 
 class Armour:
-    def __init__(self, name, armour_type, number, info_id):
+    def __init__(self, name, armour_type, number):
         self.name = name
         self.armour_type = armour_type
         self.k = number
-        self.info_id = info_id
 
     def get_damage(self, damage, f=False):
         if self.armour_type == 1:
@@ -177,7 +220,7 @@ class Armour:
 
 
 class SpaceShip(pygame.sprite.Sprite):
-    def __init__(self, name, pos, hp, speed, info_id, sprite,
+    def __init__(self, name, pos, hp, speed, sprite,
                  weapon=None, armor=None):
         super().__init__()
         self.image = sprite
@@ -189,10 +232,10 @@ class SpaceShip(pygame.sprite.Sprite):
         self.hp = hp
         self.max_hp = hp
         self.speed = speed
-        self.info_id = info_id
         self.weapon = weapon
         self.armor = armor
         self.start = 0
+        self.gun_id = 0
 
     def get_damage(self, damage, f=False):
         if self.armor is not None:
@@ -233,6 +276,7 @@ class SpaceShip(pygame.sprite.Sprite):
 
     def equip_gun(self, weapon):
         self.weapon = weapon
+        self.gun_id = weapon.sprite_id
 
     def equip_armour(self, armour):
         self.armor = armour
@@ -243,13 +287,14 @@ class SpaceShip(pygame.sprite.Sprite):
 
 class Buran(SpaceShip):
     def __init__(self, pos, hp, speed, money, score, weapon, armour):
-        super().__init__('Buran', pos, hp, speed, 1, buran_images[0][0], weapon=weapon, armor=armour)
+        super().__init__('Buran', pos, hp, speed, buran_images[0][0][0], weapon=weapon, armor=armour)
         self.money = money
         self.score = score
         self.forward = 0
         self.side = 0
+        self.gun_id = 0
 
-    def draw_hp(self, screen, size):
+    def draw_info(self, screen, size):
         hp_rect = pygame.transform.scale(hp_none, (int(size[0] * 0.025), int(size[0] * 0.025))).get_rect()
         hp_rect.width, hp_rect.height = int(size[0] * 0.025), int(size[0] * 0.025)
         hp_rect.x, hp_rect.y = int(size[0] // 100 * 0.05), int(size[1] - size[0] // 100 * 0.05 - hp_rect.height)
@@ -276,62 +321,67 @@ class Buran(SpaceShip):
             body.get_damage(self.hp)
             self.get_damage(damage)
 
-    def update(self, keys, fps, size, screen, body):
-        if bool(list(filter(lambda x: x != 0, keys))):
-            if keys[pygame.K_w] and self.rect.y > 0:
-                self.move('up', fps)
-                self.forward = 1
-                self.side = 0
+    def update(self, keys, fps, size, screen, body, shells):
+        if keys[pygame.K_w] and self.rect.y > 0:
+            self.move('up', fps)
+            self.forward = 1
+            self.side = 0
 
-            elif keys[pygame.K_s] and self.rect.y + self.rect.height < size[1] * 0.96 - 10:
-                self.move('down', fps)
-                self.forward = 0
-                self.side = 0
-
-            else:
-                self.forward = 0
-
-            if keys[pygame.K_a] and self.rect.x > 0:
-                self.move('left', fps)
-                self.side = 2
-
-            if keys[pygame.K_d] and self.rect.x + self.rect.width < size[0]:
-                self.move('right', fps)
-                self.side = 1
-
-            if keys[pygame.K_d] and keys[pygame.K_a]:
-                self.side = 0
-
-        else:
+        elif keys[pygame.K_s] and self.rect.y + self.rect.height < size[1] * 0.96 - 10:
+            self.move('down', fps)
             self.forward = 0
             self.side = 0
 
-        self.image = buran_images[self.forward][self.side]
+        else:
+            self.forward = 0
+
+        if keys[pygame.K_a] and self.rect.x > 0:
+            self.move('left', fps)
+            self.side = 2
+
+        if keys[pygame.K_d] and self.rect.x + self.rect.width < size[0]:
+            self.move('right', fps)
+            self.side = 1
+
+        if keys[pygame.K_d] and keys[pygame.K_a]:
+            self.side = 0
+
+        if not (keys[pygame.K_w] or keys[pygame.K_a] or keys[pygame.K_s] or keys[pygame.K_d]):
+            self.forward = 0
+            self.side = 0
+
+        self.image = buran_images[self.gun_id][self.forward][self.side]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.x, self.y
         self.mask = pygame.mask.from_surface(self.image)
+        if self.weapon is not None:
+            if keys[pygame.K_SPACE]:
+                self.weapon.fire(shells, self, 1)
 
-        self.draw_hp(screen, size)
+        self.draw_info(screen, size)
 
 
 class SpaceShuttle(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Space Shuttle', pos, 150, 150, 1, space_shuttle[0])
+        super().__init__('Space Shuttle', pos, 150, 150, space_shuttle[0], weapon=MachineGun())
         self.time_update = time()
 
-    def update(self, keys, fps, size, screen, body):
+    def update(self, keys, fps, size, screen, body, shells):
         self.move('down', fps)
         self.draw_hp(screen)
-        if time() - self.time_update >= 0:
-            if body.x <= self.x <= body.x + body.rect.width // 2:
-                pass
-            elif body.x > self.x and self.hp > 0:
-                self.move('right', fps)
-            elif body.x < self.x and self.hp > 0:
-                self.move('left', fps)
-            else:
-                pass
-            self.time_update = time()
+        self.weapon.fire(group=shells, ship=self, quarter=4)
+        if time() - self.time_update >= 1:
+                if body.x <= self.x <= body.x + body.rect.width // 2:
+                    pass
+                else:
+                    if body.x > self.x and self.hp > 0:
+                        self.move('right', fps)
+                        # break
+                    if body.x < self.x and self.hp > 0:
+                        self.move('left', fps)
+                        # break
+                self.time_update = time()
+
         if time() - self.start >= 1 and self.start != 0:
             self.kill()
             self.start = 0
@@ -339,9 +389,9 @@ class SpaceShuttle(SpaceShip):
 
 class Titan34D(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Titan 34D', pos, 75, 200, 1, titan34D, armor=Armour('titanium plating', 2, 0.85, 1))
+        super().__init__('Titan 34D', pos, 75, 400, titan34D, armor=Armour('titanium plating', 2, 0.85))
 
-    def update(self, keys, fps, size, screen, body):
+    def update(self, keys, fps, size, screen, body, shells):
         self.move('down', fps)
         self.draw_hp(screen)
         if time() - self.start >= 1 and self.start != 0:
@@ -402,7 +452,7 @@ class Asteroid(pygame.sprite.Sprite):
             body.get_damage(self.hp)
             self.get_damage(damage)
 
-    def update(self, keys, fps, size, screen, body):
+    def update(self, keys, fps, size, screen, body, shells):
         self.move('down', fps)
 
 

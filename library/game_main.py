@@ -17,6 +17,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
     shells = pygame.sprite.Group()
     ship = Buran((size[0] // 2, size[1] - 158), *data_ship)
     ships.add(ship)
+    ship.equip_gun(MachineGun())
     while run:
         keys = pygame.key.get_pressed()
         screen.fill((0, 0, 0))
@@ -27,9 +28,6 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                 if event.key == pygame.K_ESCAPE:
                     if not game.pause_menu():
                         run = False
-                if event.key == pygame.K_SPACE:
-                    pos = [ship.rect.x + ship.rect.width // 2,  ship.rect.y - ship.speed / fps - 7]
-                    shells.add(ExplosiveAmmunition(pos, 500, 1, 1, ship, 50))
 
         if len(ships) - 1 - count_enemy < count_asteroid:
             # if (time.time() - start) % 1 == 0:
@@ -45,11 +43,10 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                                        randint(10, 20)))
 
         if len(ships) - 1 - count_asteroid < count_enemy and (time.time() - pusk) >= 3:
-            x = randint(1, 100)
-            print(x)
+            x = randint(71, 100)
             if 91 <= x <= 100:
                 ships.add(Titan34D((randint(int(ship.x) - 20, int(ship.x) + 20), -100)))
-            else:
+            elif 71 <= x <= 90:
                 ships.add(SpaceShuttle((100, 100)))
             pusk = time.time()
 
@@ -71,7 +68,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
         shells.draw(screen)
         ships.draw(screen)
         shells.update(fps)
-        ships.update(keys, fps, size, screen, ship)
+        ships.update(keys, fps, size, screen, ship, shells)
         clock.tick(fps)
         pygame.display.flip()
     print(f'money - {ship.money}')
