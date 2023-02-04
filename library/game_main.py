@@ -29,7 +29,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                         run = False
                 if event.key == pygame.K_SPACE:
                     pos = [ship.rect.x + ship.rect.width // 2,  ship.rect.y - ship.speed / fps - 7]
-                    shells.add(ClassicAmmunition(pos, 500, 1, 1, ship))
+                    shells.add(ExplosiveAmmunition(pos, 500, 1, 1, ship, 50))
 
         if len(ships) - 1 - count_enemy < count_asteroid:
             # if (time.time() - start) % 1 == 0:
@@ -49,6 +49,8 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
             print(x)
             if 91 <= x <= 100:
                 ships.add(Titan34D((randint(int(ship.x) - 20, int(ship.x) + 20), -100)))
+            else:
+                ships.add(SpaceShuttle((100, 100)))
             pusk = time.time()
 
         if ship.hp <= 0:
@@ -69,7 +71,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
         shells.draw(screen)
         ships.draw(screen)
         shells.update(fps)
-        ships.update(keys, fps, size, screen)
+        ships.update(keys, fps, size, screen, ship)
         clock.tick(fps)
         pygame.display.flip()
     print(f'money - {ship.money}')

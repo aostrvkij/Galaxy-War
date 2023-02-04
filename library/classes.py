@@ -26,6 +26,7 @@ buran_images = [[pygame.transform.scale(load_image('buran.png'), (50, 79)),
                 [pygame.transform.scale(load_image('buran forward.png'), (50, 79)),
                  pygame.transform.scale(load_image('buran right forward.png'), (50, 79)),
                  pygame.transform.scale(load_image('buran left forward.png'), (50, 79))]]
+space_shuttle = [pygame.transform.scale(load_image('space shuttle.png'), (50, 79))]
 titan34D = pygame.transform.scale(load_image('titan 34D.png'), (100, 152))
 asteroid = load_image('Asteroid.png')
 asteroid_iron = load_image('Asteroid_Iron.png')
@@ -236,7 +237,7 @@ class SpaceShip(pygame.sprite.Sprite):
     def equip_armour(self, armour):
         self.armor = armour
 
-    def update(self, keys, fps, size, screen):
+    def update(self, keys, fps, size, screen, body):
         pass
 
 
@@ -275,7 +276,7 @@ class Buran(SpaceShip):
             body.get_damage(self.hp)
             self.get_damage(damage)
 
-    def update(self, keys, fps, size, screen):
+    def update(self, keys, fps, size, screen, body):
         if bool(list(filter(lambda x: x != 0, keys))):
             if keys[pygame.K_w] and self.rect.y > 0:
                 self.move('up', fps)
@@ -313,11 +314,34 @@ class Buran(SpaceShip):
         self.draw_hp(screen, size)
 
 
+class SpaceShuttle(SpaceShip):
+    def __init__(self, pos):
+        super().__init__('Space Shuttle', pos, 150, 150, 1, space_shuttle[0])
+        self.time_update = time()
+
+    def update(self, keys, fps, size, screen, body):
+        self.move('down', fps)
+        self.draw_hp(screen)
+        if time() - self.time_update >= 0:
+            if body.x <= self.x <= body.x + body.rect.width // 2:
+                pass
+            elif body.x > self.x and self.hp > 0:
+                self.move('right', fps)
+            elif body.x < self.x and self.hp > 0:
+                self.move('left', fps)
+            else:
+                pass
+            self.time_update = time()
+        if time() - self.start >= 1 and self.start != 0:
+            self.kill()
+            self.start = 0
+
+
 class Titan34D(SpaceShip):
     def __init__(self, pos):
         super().__init__('Titan 34D', pos, 75, 200, 1, titan34D, armor=Armour('titanium plating', 2, 0.85, 1))
 
-    def update(self, keys, fps, size, screen):
+    def update(self, keys, fps, size, screen, body):
         self.move('down', fps)
         self.draw_hp(screen)
         if time() - self.start >= 1 and self.start != 0:
@@ -378,7 +402,7 @@ class Asteroid(pygame.sprite.Sprite):
             body.get_damage(self.hp)
             self.get_damage(damage)
 
-    def update(self, keys, fps, size, screen):
+    def update(self, keys, fps, size, screen, body):
         self.move('down', fps)
 
 
