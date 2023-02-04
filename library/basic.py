@@ -1,4 +1,4 @@
-from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN, CONGAME_BTN, OVER_BTN
+from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN, CONGAME_BTN, OVER_BTN, INFO_BTN
 from pygame.display import flip
 from pygame.key import get_pressed
 from library import game_main
@@ -15,6 +15,7 @@ class Game:
         self.settings_btn = SETTING_BTN
         self.libr_btns = LIBRARY_BTN
         self.congame_btns = CONGAME_BTN
+        self.info_btn = INFO_BTN
         self.screen = screen
         self.run_pause = None
 
@@ -95,10 +96,17 @@ class Game:
     def library(self):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
             True, False, False, False, True, False
+
+        def info_of_shuttles(*some_info):
+            run = True
+            while run:
+                self.screen.fill('black')
+
+
         while self.run_library:
             self.screen.fill('black')
-            self.libr_btns.update(self)
-            self.libr_btns.draw(self.screen)
+            self.info_btn.update(self)
+            self.info_btn.draw(self.screen)
             flip()
 
             for e in event.get():
@@ -108,3 +116,6 @@ class Game:
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         self.menu()
+    def Buran(self):
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
+            True, False, False, False, True, False

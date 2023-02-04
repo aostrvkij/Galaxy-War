@@ -28,6 +28,8 @@ class Button(pygame.sprite.Sprite):
                         game.menu()
                     if self.action == 'library':
                         game.library()
+                    if self.action == 'buran':
+                        game.library()
                     if self.action == 'exit':
                         game.run_menu, game.run_game, game.run_over, game.run_settings, game.run_library, game.run_congame = \
                             False, False, False, False, False, False
