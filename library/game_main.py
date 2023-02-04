@@ -56,6 +56,8 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
             if pygame.sprite.spritecollide(bullet, ships, False):
                 for i in pygame.sprite.spritecollide(bullet, ships, False):
                     bullet.give_damage(i)
+            if bullet.y > size[1] + 20 or bullet.y < - 20:
+                shells.remove(bullet)
 
         for s in ships:
             if s.rect.y > size[1]:

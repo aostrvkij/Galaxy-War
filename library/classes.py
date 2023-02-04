@@ -192,9 +192,9 @@ class MachineGun(Weapon):
                     group.add(ClassicAmmunition((ship.rect.x + self.pos2[0], ship.rect.y - self.pos[1]),
                                                 500 * self.baf_speed, quarter, 1, ship))
                 if quarter == 4:
-                    group.add(ClassicAmmunition((ship.rect.x + self.pos[0], ship.rect.y + ship.rect.height),
+                    group.add(ClassicAmmunition((ship.rect.x + self.pos[0], ship.rect.y + ship.rect.height + self.pos[1]),
                                                 500 * self.baf_speed, quarter, 1, ship))
-                    group.add(ClassicAmmunition((ship.rect.x + self.pos2[0], ship.rect.y + ship.rect.height),
+                    group.add(ClassicAmmunition((ship.rect.x + self.pos2[0], ship.rect.y + ship.rect.height + self.pos[1]),
                                                 500 * self.baf_speed, quarter, 1, ship))
 
 
@@ -367,10 +367,10 @@ class SpaceShuttle(SpaceShip):
         self.time_update = time()
 
     def update(self, keys, fps, size, screen, body, shells):
-        self.move('down', fps)
-        self.draw_hp(screen)
-        self.weapon.fire(group=shells, ship=self, quarter=4)
-        if time() - self.time_update >= 1:
+        if self.hp > 0:
+            self.draw_hp(screen)
+            if 1 <= (time() - self.time_update) <= 5:
+                self.weapon.fire(group=shells, ship=self, quarter=4)
                 if body.x <= self.x <= body.x + body.rect.width // 2:
                     pass
                 else:
@@ -380,7 +380,10 @@ class SpaceShuttle(SpaceShip):
                     if body.x < self.x and self.hp > 0:
                         self.move('left', fps)
                         # break
+            elif (time() - self.time_update) >= 7:
                 self.time_update = time()
+        if self.hp <= self.max_hp * 0.5:
+            self.move('down', fps)
 
         if time() - self.start >= 1 and self.start != 0:
             self.kill()
