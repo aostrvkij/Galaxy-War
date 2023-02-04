@@ -8,6 +8,7 @@ clock = pygame.time.Clock()
 
 FPS = 60
 MENU_BTN = pygame.sprite.Group()
+OVER_BTN = pygame.sprite.Group()
 SETTING_BTN = pygame.sprite.Group()
 LIBRARY_BTN = pygame.sprite.Group()
 CONGAME_BTN = pygame.sprite.Group()
@@ -23,7 +24,11 @@ var_menu = [
            SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08),
     Button('Images/btns/exit.png', 'exit', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 2), ]
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 2)]
+var_over = [
+    Button('Images/btns/exit.png', 'exit', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 2)]
 var_sett = [
     Button('Images/btns/newgame.png', 'newgame', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
@@ -49,6 +54,8 @@ var_cong = [
 
 for i in var_menu:
     MENU_BTN.add(i)
+for i in var_over:
+    OVER_BTN.add(i)
 for i in var_sett:
     SETTING_BTN.add(i)
 for i in var_libr:

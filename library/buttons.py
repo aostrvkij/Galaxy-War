@@ -17,6 +17,7 @@ class Button(pygame.sprite.Sprite):
         if self.rect.x < mouse[0] < self.rect.x + self.rect.width:
             if self.rect.y < mouse[1] < self.rect.y + self.rect.height:
                 if click[0] == 1:
+                    pygame.time.wait(100)
                     if self.action == 'newgame':
                         game.game()
                     if self.action == 'congame':
@@ -28,5 +29,5 @@ class Button(pygame.sprite.Sprite):
                     if self.action == 'library':
                         game.library()
                     if self.action == 'exit':
-                        game.run_menu, game.run_game, game.run_settings, game.run_library, game.run_congame = \
-                            False, False, False, False, False
+                        game.run_menu, game.run_game, game.run_over, game.run_settings, game.run_library, game.run_congame = \
+                            False, False, False, False, False, False

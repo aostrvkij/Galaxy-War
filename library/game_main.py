@@ -76,3 +76,4 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
         pygame.display.flip()
     print(f'money - {ship.money}')
     print(f'score - {ship.score * int(time.time() - start)}')
+    return ship.score * int(time.time() - start), ship.money
