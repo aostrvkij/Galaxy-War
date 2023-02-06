@@ -199,10 +199,12 @@ class MachineGun(Weapon):
 
 
 class Armour:
-    def __init__(self, name, armour_type, number):
+    def __init__(self, name, armour_type, number, owner):
         self.name = name
         self.armour_type = armour_type
         self.k = number
+        self.owner = owner
+        self.max_k = number
 
     def get_damage(self, damage, f=False):
         if self.armour_type == 1:
@@ -217,6 +219,11 @@ class Armour:
         elif self.armour_type == 3:
             if f:
                 return 0
+
+    def draw_ammo(self, screen):
+        pygame.draw.rect(screen, (155, 155, 155), (self.owner.rect.x, self.owner.rect.y - self.owner.rect.height * 0.30,
+                                                   self.owner.rect.width / self.max_k * self.k,
+                                                   self.owner.rect.height * 0.1))
 
 
 class SpaceShip(pygame.sprite.Sprite):
@@ -363,16 +370,19 @@ class Buran(SpaceShip):
 
 class SpaceShuttle(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Space Shuttle', pos, 150, 150, space_shuttle[0], weapon=MachineGun())
+        super().__init__('Space Shuttle', pos, 150, 150, space_shuttle[0], weapon=MachineGun(),
+                         armor=Armour('steel plate', 1, 100, self))
         self.time_update = time()
 
     def update(self, keys, fps, size, screen, body, shells):
+        if self.y < 100:
+            self.move('down', fps)
         if self.hp > 0:
             self.draw_hp(screen)
-            if 1 <= (time() - self.time_update) <= 5:
-                self.weapon.fire(group=shells, ship=self, quarter=4)
+            self.armor.draw_ammo(screen)
+            if 0 <= (time() - self.time_update) <= 5:
                 if body.x <= self.x <= body.x + body.rect.width // 2:
-                    pass
+                    self.weapon.fire(group=shells, ship=self, quarter=4)
                 else:
                     if body.x > self.x and self.hp > 0:
                         self.move('right', fps)
@@ -380,9 +390,11 @@ class SpaceShuttle(SpaceShip):
                     if body.x < self.x and self.hp > 0:
                         self.move('left', fps)
                         # break
-            elif (time() - self.time_update) >= 7:
+            elif 5 <= (time() - self.time_update) <= 8:
+                self.weapon.fire(group=shells, ship=self, quarter=4)
+            elif (time() - self.time_update) >= 8:
                 self.time_update = time()
-        if self.hp <= self.max_hp * 0.5:
+        if self.armor.k <= 0:
             self.move('down', fps)
 
         if time() - self.start >= 1 and self.start != 0:
@@ -392,7 +404,7 @@ class SpaceShuttle(SpaceShip):
 
 class Titan34D(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Titan 34D', pos, 75, 400, titan34D, armor=Armour('titanium plating', 2, 0.85))
+        super().__init__('Titan 34D', pos, 75, 400, titan34D, armor=Armour('titanium plating', 2, 0.85, self))
 
     def update(self, keys, fps, size, screen, body, shells):
         self.move('down', fps)

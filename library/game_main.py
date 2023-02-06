@@ -17,7 +17,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
     shells = pygame.sprite.Group()
     ship = Buran((size[0] // 2, size[1] - 158), *data_ship)
     ships.add(ship)
-    ship.equip_gun(MachineGun())
+    # ship.equip_gun(MachineGun())
     while run:
         keys = pygame.key.get_pressed()
         screen.fill((0, 0, 0))
@@ -43,11 +43,11 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                                        randint(10, 20)))
 
         if len(ships) - 1 - count_asteroid < count_enemy and (time.time() - pusk) >= 3:
-            x = randint(71, 100)
+            x = randint(1, 100)
             if 91 <= x <= 100:
                 ships.add(Titan34D((randint(int(ship.x) - 20, int(ship.x) + 20), -100)))
             elif 71 <= x <= 90:
-                ships.add(SpaceShuttle((100, 100)))
+                ships.add(SpaceShuttle((randint(0, size[0] - 60), -10)))
             pusk = time.time()
 
         if ship.hp <= 0:
