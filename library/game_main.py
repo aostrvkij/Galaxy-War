@@ -46,8 +46,10 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
             x = randint(1, 100)
             if 91 <= x <= 100:
                 ships.add(Titan34D((randint(int(ship.x) - 20, int(ship.x) + 20), -100)))
-            elif 71 <= x <= 90:
+            elif 61 <= x <= 90:
                 ships.add(SpaceShuttle((randint(0, size[0] - 60), -10)))
+            elif 41 <= x <= 60:
+                ships.add(DreamChaser((500, 0)))
             pusk = time.time()
 
         if ship.hp <= 0:

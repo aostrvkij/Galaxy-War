@@ -33,7 +33,10 @@ buran_images = [[[pygame.transform.scale(load_image('buran.png'), (50, 79)),
                   pygame.transform.scale(load_image('buran right forward gun1.png'), (50, 79)),
                   pygame.transform.scale(load_image('buran left forward gun1.png'), (50, 79))]]
                 ]
-space_shuttle = [pygame.transform.scale(load_image('space shuttle.png'), (50, 79))]
+space_shuttle = [pygame.transform.scale(load_image('space shuttle.png'), (50, 79)),
+                 pygame.transform.scale(load_image('space shuttle right.png'), (50, 79)),
+                 pygame.transform.scale(load_image('space shuttle left.png'), (50, 79))]
+dream_chaser = pygame.transform.scale(load_image('dream chaser.png'), (70, 104))
 titan34D = pygame.transform.scale(load_image('titan 34D.png'), (100, 152))
 asteroid = load_image('Asteroid.png')
 asteroid_iron = load_image('Asteroid_Iron.png')
@@ -164,17 +167,25 @@ class Weapon:
         self.baf_speed = baf_speed
         self.star_fire = time()
 
-    def fire(self, group, ship):
+    def fire(self, group, ship, quarter):
         if time() - self.star_fire >= self.rate_of_fire:
             self.star_fire = time()
+            if quarter == 1:
+                if self.ammunition_type == 2:
+                    group.add(PiercingAmmunition((ship.rect.x + self.pos[0], ship.rect.y - self.pos[1]),
+                                                 500 * self.baf_speed, quarter, 1, ship, self.ammunition_cof))
 
-            if self.ammunition_type == 2:
-                group.add(PiercingAmmunition((ship.rect.x + self.pos[0], ship.rect.y + self.pos[1]),
-                                             500 * self.baf_speed, 1, 1, ship, self.ammunition_cof))
+                elif self.ammunition_type == 3:
+                    group.add(ExplosiveAmmunition((ship.rect.x + self.pos[0], ship.rect.y - self.pos[1]),
+                                                  500 * self.baf_speed, quarter, 1, ship, self.ammunition_cof))
+            if quarter == 4:
+                if self.ammunition_type == 2:
+                    group.add(PiercingAmmunition((ship.rect.x + self.pos[0], ship.rect.y + self.pos[1] + ship.rect.height),
+                                                 500 * self.baf_speed, quarter, 1, ship, self.ammunition_cof))
 
-            elif self.ammunition_type == 3:
-                group.add(ExplosiveAmmunition((ship.rect.x + self.pos[0], ship.rect.y + self.pos[1]),
-                                              500 * self.baf_speed, 1, 1, ship, self.ammunition_cof))
+                elif self.ammunition_type == 3:
+                    group.add(ExplosiveAmmunition((ship.rect.x + self.pos[0], ship.rect.y + self.pos[1] + ship.rect.height),
+                                                  500 * self.baf_speed, quarter, 1, ship, self.ammunition_cof))
 
 
 class MachineGun(Weapon):
@@ -196,6 +207,11 @@ class MachineGun(Weapon):
                                                 500 * self.baf_speed, quarter, 1, ship))
                     group.add(ClassicAmmunition((ship.rect.x + self.pos2[0], ship.rect.y + ship.rect.height + self.pos[1]),
                                                 500 * self.baf_speed, quarter, 1, ship))
+
+
+class PiercingRifle(Weapon):
+    def __init__(self):
+        super().__init__('бронебойная винтовка', 5, 50, 0.25, 2, [35, 6], 2, 1.5, 5)
 
 
 class Armour:
@@ -376,6 +392,7 @@ class SpaceShuttle(SpaceShip):
         super().__init__('Space Shuttle', pos, 150, 150, space_shuttle[0], weapon=MachineGun(),
                          armor=Armour('steel plate', 1, 100, self))
         self.time_update = time()
+        self.side = 0
 
     def update(self, keys, fps, size, screen, body, shells):
         if self.y < 100:
@@ -384,19 +401,29 @@ class SpaceShuttle(SpaceShip):
             self.draw_hp(screen)
             self.armor.draw_ammo(screen)
             if 0 <= (time() - self.time_update) <= 5:
-                if body.x <= self.x <= body.x + body.rect.width // 2:
+                if body.x - body.rect.width // 3 <= self.x <= body.x:
                     self.weapon.fire(group=shells, ship=self, quarter=4)
+                    self.side = 0
                 else:
                     if body.x > self.x and self.hp > 0:
                         self.move('right', fps)
-                        # break
-                    if body.x < self.x and self.hp > 0:
+                        self.side = 1
+                    elif body.x < self.x and self.hp > 0:
                         self.move('left', fps)
-                        # break
+                        self.side = 2
+                    else:
+                        self.side = 0
             elif 5 <= (time() - self.time_update) <= 8:
                 self.weapon.fire(group=shells, ship=self, quarter=4)
+                self.side = 0
             elif (time() - self.time_update) >= 8:
                 self.time_update = time()
+
+            self.image = space_shuttle[self.side]
+            self.rect = self.image.get_rect()
+            self.rect.x, self.rect.y = self.x, self.y
+            self.mask = pygame.mask.from_surface(self.image)
+
         if self.armor.k <= 0:
             self.move('down', fps)
 
@@ -405,9 +432,80 @@ class SpaceShuttle(SpaceShip):
             self.start = 0
 
 
+class DreamChaser(SpaceShip):
+    def __init__(self, pos):
+        super().__init__('Dream Chaser', pos, 300, 225, dream_chaser, weapon=PiercingRifle(),
+                         armor=Armour('steel plate', 2, 0.5, self))
+        self.time_update = time()
+        self.side = 1
+
+    def update(self, keys, fps, size, screen, body, shells):
+        # self.move('down', fps)
+        self.draw_hp(screen)
+        if self.hp >= self.max_hp * 0.75:
+            if self.y < 100:
+                self.move('down', fps)
+            if self.x + self.rect.width + 10 >= size[0]:
+                self.side = 2
+            if self.x - 10 <= 0:
+                self.side = 1
+            if self.x < size[0] and self.side == 1:
+                self.move('right', fps)
+            if self.x > 0 and self.side == 2:
+                self.move('left', fps)
+            self.weapon.fire(group=shells, ship=self, quarter=4)
+        if self.max_hp * 0.5 <= self.hp <= self.max_hp * 0.75:
+            if self.y < 250:
+                self.move('down', fps)
+                self.equip_armour(Armour('steel plate', 2, 0.4, self))
+            if body.x - body.rect.width // 3 <= self.x <= body.x:
+                pass
+            else:
+                if self.x + self.rect.width + 10 >= size[0]:
+                    self.side = 2
+                if self.x - 10 <= 0:
+                    self.side = 1
+                if self.x < size[0] and self.side == 1:
+                    self.move('right', fps)
+                if self.x > 0 and self.side == 2:
+                    self.move('left', fps)
+            self.weapon.fire(group=shells, ship=self, quarter=4)
+        if self.max_hp * 0.25 <= self.hp <= self.max_hp * 0.5:
+            if self.y < 400:
+                self.move('down', fps)
+                self.equip_armour(Armour('steel plate', 2, 0.3, self))
+            if 0 <= (time() - self.time_update) <= 3:
+                if body.x - body.rect.width // 3 <= self.x <= body.x:
+                    pass
+                else:
+                    if body.x > self.x and self.hp > 0:
+                        self.move('right', fps)
+
+                    elif body.x < self.x and self.hp > 0:
+                        self.move('left', fps)
+            elif (time() - self.time_update) >= 5:
+                self.time_update = time()
+            self.weapon.fire(group=shells, ship=self, quarter=4)
+        if self.hp <= self.max_hp * 0.25:
+            self.move('down', fps)
+            self.equip_armour(Armour('steel plate', 2, 0.2, self))
+            if body.x <= self.x <= body.x + body.rect.width // 2:
+                pass
+            else:
+                if body.x > self.x and self.hp > 0:
+                    self.move('right', fps)
+                elif body.x < self.x and self.hp > 0:
+                    self.move('left', fps)
+
+        if time() - self.start >= 1 and self.start != 0:
+            self.kill()
+            self.start = 0
+        # self.weapon.fire(group=shells, ship=self, quarter=4)
+
+
 class Titan34D(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Titan 34D', pos, 75, 400, titan34D, armor=Armour('titanium plating', 2, 0.85, self))
+        super().__init__('Titan 34D', pos, 75, 450, titan34D, armor=Armour('titanium plating', 2, 0.85, self))
 
     def update(self, keys, fps, size, screen, body, shells):
         self.move('down', fps)
