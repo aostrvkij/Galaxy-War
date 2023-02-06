@@ -299,7 +299,10 @@ class Buran(SpaceShip):
         self.score = score
         self.forward = 0
         self.side = 0
-        self.gun_id = 0
+        if weapon is None:
+            self.gun_id = 0
+        else:
+            self.gun_id = weapon.sprite_id
 
     def draw_info(self, screen, size):
         hp_rect = pygame.transform.scale(hp_none, (int(size[0] * 0.025), int(size[0] * 0.025))).get_rect()

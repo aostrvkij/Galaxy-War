@@ -26,8 +26,8 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                 run = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    if not game.pause_menu():
-                        run = False
+                    print(game.pause_menu())
+                    run = game.pause_menu()
 
         if len(ships) - 1 - count_enemy < count_asteroid:
             # if (time.time() - start) % 1 == 0:

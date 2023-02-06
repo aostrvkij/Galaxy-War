@@ -52,7 +52,7 @@ var_cong = [
     Button('Images/btns/congame.png', 'congame', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
            SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 2),
-    Button('Images/btns/exit.png', 'menu', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
+    Button('Images/btns/exit.png', 'exit_2', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
            SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08)]
 
