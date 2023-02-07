@@ -47,6 +47,7 @@ hp_full = load_image('hp_full.png')
 boom = load_image('boom.png')
 
 fire_sound = pygame.mixer.Sound("Images/data/fire_sound.wav")
+fire2_sound = pygame.mixer.Sound("Images/data/fire2_sound.wav")
 
 
 class Ammunition(pygame.sprite.Sprite):
@@ -217,7 +218,11 @@ class MachineGun(Weapon):
 class PiercingRifle(Weapon):
     def __init__(self):
         super().__init__('бронебойная винтовка', 5, 50, 0.25, 2, [35, 6], 2, 1.5, 5)
+        fire2_sound.set_volume(0.1)
 
+    def fire(self, group, ship, quarter):
+        fire2_sound.play(maxtime=500)
+        super().fire(group, ship, quarter)
 
 class Armour:
     def __init__(self, name, armour_type, number, owner):
