@@ -46,6 +46,8 @@ hp_half = load_image('hp_half.png')
 hp_full = load_image('hp_full.png')
 boom = load_image('boom.png')
 
+fire_sound = pygame.mixer.Sound("Images/data/fire_sound.wav")
+
 
 class Ammunition(pygame.sprite.Sprite):
     def __init__(self, pos, speed, damage, sprite, quarter, corner, owner):
@@ -192,10 +194,13 @@ class MachineGun(Weapon):
     def __init__(self):
         super().__init__('пулемёт', 3, 100, 0.05, 1, [35, 6], 1, 1.1, 0)
         self.pos2 = [15, 6]
+        fire_sound.set_volume(0.05)
 
     def fire(self, group, ship, quarter):
         if time() - self.star_fire >= self.rate_of_fire:
             self.star_fire = time()
+
+            fire_sound.play(maxtime=500)
             if self.ammunition_type == 1:
                 if quarter == 1:
                     group.add(ClassicAmmunition((ship.rect.x + self.pos[0], ship.rect.y - self.pos[1]),
@@ -505,7 +510,7 @@ class DreamChaser(SpaceShip):
 
 class Titan34D(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Titan 34D', pos, 75, 450, titan34D, armor=Armour('titanium plating', 2, 0.85, self))
+        super().__init__('Titan 34D', pos, 100, 500, titan34D, armor=Armour('titanium plating', 2, 0.9, self))
 
     def update(self, keys, fps, size, screen, body, shells):
         self.move('down', fps)

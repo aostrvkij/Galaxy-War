@@ -44,7 +44,7 @@ class Game:
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
             False, True, False, False, False, False
         info = read_info_ship()
-        score, money = game_main.main(FPS, 70, 5, [info[1], info[2], info[3], info[4], eval(info[5]), eval(info[6])],
+        score, money = game_main.main(FPS, 70, 5, [100, info[2], info[3], info[4], eval(info[5]), eval(info[6])],
                                       self)
         self.run_game = False
         add_cell('Player', score)
