@@ -27,7 +27,6 @@ class Game:
             True, False, False, False, False, False
         while self.run_menu:
             self.screen.fill('black')
-            self.menu_btn.update(self)
             self.menu_btn.draw(self.screen)
             flip()
             for e in event.get():
@@ -37,6 +36,9 @@ class Game:
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         pygame.quit()
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        self.menu_btn.update(self)
 
     def game(self):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
@@ -58,7 +60,6 @@ class Game:
             False, False, True, False, False, False
         while self.run_over:
             self.screen.fill('black')
-            self.over_btn.update(self)
             self.over_btn.draw(self.screen)
             flip()
             for e in event.get():
@@ -68,14 +69,15 @@ class Game:
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         self.menu()
-        self.menu()
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        self.over_btn.update(self)
 
     def settings(self):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
             False, False, False, True, False, False
         while self.run_settings:
             self.screen.fill('black')
-            self.settings_btn.update(self)
             self.settings_btn.draw(self.screen)
             flip()
             for e in event.get():
@@ -85,13 +87,15 @@ class Game:
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         self.menu()
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        self.settings_btn.update(self)
 
     def pause_menu(self):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
             False, False, False, False, False, True
         while self.run_congame:
             self.screen.fill('black')
-            self.congame_btns.update(self)
             self.congame_btns.draw(self.screen)
             flip()
             if self.run_pause:
@@ -111,6 +115,9 @@ class Game:
                     if e.key == pygame.K_ESCAPE:
                         self.run_congame = False
                         return True
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        self.congame_btns.update(self)
 
     def library(self):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
@@ -123,7 +130,6 @@ class Game:
 
         while self.run_library:
             self.screen.fill('black')
-            self.info_btn.update(self)
             self.info_btn.draw(self.screen)
             flip()
 
@@ -134,6 +140,9 @@ class Game:
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         self.menu()
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        self.info_btn.update(self)
 
     def Buran(self):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \

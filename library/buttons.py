@@ -13,23 +13,20 @@ class Button(pygame.sprite.Sprite):
     def update(self, game):
 
         mouse = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
         if self.rect.x < mouse[0] < self.rect.x + self.rect.width:
             if self.rect.y < mouse[1] < self.rect.y + self.rect.height:
-                if click[0] == 1:
-                    pygame.time.wait(100)
-                    if self.action == 'newgame':
-                        game.game()
-                    if self.action == 'congame':
-                        game.run_pause = True
-                    if self.action == 'settgame':
-                        game.settings()
-                    if self.action == 'menu':
-                        game.menu()
-                    if self.action == 'library':
-                        game.library()
-                    if self.action == 'exit':
-                        game.run_menu, game.run_game, game.run_over, game.run_settings, game.run_library, game.run_congame = \
-                            False, False, False, False, False, False
-                    if self.action == 'exit_2':
-                        game.exit = True
+                if self.action == 'newgame':
+                    game.game()
+                if self.action == 'congame':
+                    game.run_pause = True
+                if self.action == 'settgame':
+                    game.settings()
+                if self.action == 'menu':
+                    game.menu()
+                if self.action == 'library':
+                    game.library()
+                if self.action == 'exit':
+                    game.run_menu, game.run_game, game.run_over, game.run_settings, game.run_library, game.run_congame = \
+                        False, False, False, False, False, False
+                if self.action == 'exit_2':
+                    game.exit = True
