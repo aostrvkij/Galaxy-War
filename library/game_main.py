@@ -5,6 +5,7 @@ import time
 
 
 def main(FPS, count_asteroid, count_enemy, data_ship, game):
+    pygame.mixer.music.load("Images/data/music.mp3")
     start = time.time()
     pusk = time.time()
     pygame.init()
@@ -18,7 +19,9 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
     ship = Buran((size[0] // 2, size[1] - 158), *data_ship)
     ships.add(ship)
     # ship.equip_gun(MachineGun())
+    pygame.mixer.music.play(loops=-1, start=5)
     while run:
+        pygame.mixer.music.unpause()
         keys = pygame.key.get_pressed()
         screen.fill((0, 0, 0))
         for event in pygame.event.get():
@@ -26,7 +29,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                 run = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    print(game.pause_menu())
+                    pygame.mixer.music.pause()
                     run = game.pause_menu()
 
         if len(ships) - 1 - count_enemy < count_asteroid:
@@ -49,7 +52,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
             elif 61 <= x <= 90:
                 ships.add(SpaceShuttle((randint(0, size[0] - 60), -10)))
             elif 41 <= x <= 60:
-                ships.add(DreamChaser((500, 0)))
+                ships.add(DreamChaser((randint(0, size[0] - 80), 0)))
             pusk = time.time()
 
         if ship.hp <= 0:
@@ -75,6 +78,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
         ships.update(keys, fps, size, screen, ship, shells)
         clock.tick(fps)
         pygame.display.flip()
+    pygame.mixer.music.stop()
     print(f'money - {ship.money}')
     print(f'score - {ship.score * int(time.time() - start)}')
     return ship.score * int(time.time() - start), ship.money
