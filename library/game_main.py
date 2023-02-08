@@ -8,7 +8,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
     pygame.mixer.music.load("Images/data/music.mp3")
     start = time.time()
     pusk = time.time()
-    # pygame.mixer.pre_init(44100, -16, 3, 512)
+    pygame.mixer.pre_init(44100, -32, 2, 1024)
     pygame.init()
     screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h))
     size = screen.get_size()
@@ -81,6 +81,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
         clock.tick(fps)
         pygame.display.flip()
     pygame.mixer.music.stop()
+    pygame.mixer.pause()
     print(f'money - {ship.money}')
     print(f'score - {ship.score * int(time.time() - start)}')
     return ship.score * int(time.time() - start), ship.money

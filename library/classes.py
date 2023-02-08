@@ -46,8 +46,11 @@ hp_half = load_image('hp_half.png')
 hp_full = load_image('hp_full.png')
 boom = load_image('boom.png')
 
-fire_sound = pygame.mixer.Sound("Images/data/fire_sound.wav")
-fire2_sound = pygame.mixer.Sound("Images/data/fire2_sound.wav")
+fire_sound = pygame.mixer.Sound("Images/data/fire_sound_1.wav")
+fire_sound.set_volume(0.05)
+fire_ch = fire_sound.play(loops=-1)
+fire_ch.pause()
+fire2_sound = pygame.mixer.Sound("Images/data/fire_sound_2.wav")
 
 
 class Ammunition(pygame.sprite.Sprite):
@@ -195,13 +198,11 @@ class MachineGun(Weapon):
     def __init__(self):
         super().__init__('пулемёт', 3, 100, 0.05, 1, [35, 6], 1, 1.1, 0)
         self.pos2 = [15, 6]
-        fire_sound.set_volume(0.05)
 
     def fire(self, group, ship, quarter):
         if time() - self.star_fire >= self.rate_of_fire:
             self.star_fire = time()
 
-            fire_sound.play(maxtime=500)
             if self.ammunition_type == 1:
                 if quarter == 1:
                     group.add(ClassicAmmunition((ship.rect.x + self.pos[0], ship.rect.y - self.pos[1]),
@@ -218,11 +219,7 @@ class MachineGun(Weapon):
 class PiercingRifle(Weapon):
     def __init__(self):
         super().__init__('бронебойная винтовка', 5, 50, 0.25, 2, [35, 6], 2, 1.5, 5)
-        fire2_sound.set_volume(0.1)
 
-    def fire(self, group, ship, quarter):
-        fire2_sound.play(maxtime=500)
-        super().fire(group, ship, quarter)
 
 class Armour:
     def __init__(self, name, armour_type, number, owner):
@@ -392,8 +389,10 @@ class Buran(SpaceShip):
         self.mask = pygame.mask.from_surface(self.image)
         if self.weapon is not None:
             if keys[pygame.K_SPACE]:
+                fire_ch.unpause()
                 self.weapon.fire(shells, self, 1)
-
+            else:
+                fire_ch.pause()
         self.draw_info(screen, size)
 
 
