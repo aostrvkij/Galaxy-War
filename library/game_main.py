@@ -21,7 +21,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
     ships.add(ship)
     # ship.equip_gun(MachineGun())
     pygame.mixer.music.play(loops=-1, start=5)
-    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.set_volume(0.0)
     while run:
         pygame.mixer.music.unpause()
         keys = pygame.key.get_pressed()
@@ -32,6 +32,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.mixer.music.pause()
+                    pygame.mixer.pause()
                     run = game.pause_menu()
 
         if len(ships) - 1 - count_enemy < count_asteroid:
@@ -48,7 +49,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                                        randint(10, 20)))
 
         if len(ships) - 1 - count_asteroid < count_enemy and (time.time() - pusk) >= 3:
-            x = randint(1, 100)
+            x = randint(51, 100)
             if 91 <= x <= 100:
                 ships.add(Titan34D((randint(int(ship.x) - 20, int(ship.x) + 20), -100)))
             elif 61 <= x <= 90:
@@ -68,6 +69,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
 
         for s in ships:
             if s.rect.y > size[1]:
+                s.death()
                 ships.remove(s)
             if pygame.sprite.spritecollide(s, ships, False):
                 for i in pygame.sprite.spritecollide(s, ships, False):
