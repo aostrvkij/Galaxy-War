@@ -46,10 +46,6 @@ hp_half = load_image('hp_half.png')
 hp_full = load_image('hp_full.png')
 boom = load_image('boom.png')
 
-fire_sound = pygame.mixer.Sound("Images/data/fire_sound_1.wav")
-fire_sound.set_volume(0.05)
-fire2_sound = pygame.mixer.Sound("Images/data/fire_sound_2.wav")
-fire2_sound.set_volume(0.07)
 
 
 class Ammunition(pygame.sprite.Sprite):
@@ -197,6 +193,10 @@ class MachineGun(Weapon):
     def __init__(self):
         super().__init__('пулемёт', 3, 100, 0.05, 1, [35, 6], 1, 1.1, 0)
         self.pos2 = [15, 6]
+        self.sound = pygame.mixer.Sound('Images/data/fire_sound_1.wav')
+        self.sound.set_volume(0.05)
+        self.chanel = self.sound.play(loops=-1)
+        self.chanel.pause()
 
     def fire(self, group, ship, quarter):
         if time() - self.star_fire >= self.rate_of_fire:
@@ -218,6 +218,10 @@ class MachineGun(Weapon):
 class PiercingRifle(Weapon):
     def __init__(self):
         super().__init__('бронебойная винтовка', 5, 50, 0.25, 2, [35, 6], 2, 1.5, 5)
+        self.sound = pygame.mixer.Sound('Images/data/fire_sound_2.wav')
+        self.sound.set_volume(0.08)
+        self.chanel = self.sound.play(loops=-1)
+        self.chanel.pause()
 
 
 class Armour:
@@ -249,7 +253,7 @@ class Armour:
 
 
 class SpaceShip(pygame.sprite.Sprite):
-    def __init__(self, name, pos, hp, speed, sprite, sound,
+    def __init__(self, name, pos, hp, speed, sprite,
                  weapon=None, armor=None):
         super().__init__()
         self.image = sprite
@@ -265,10 +269,6 @@ class SpaceShip(pygame.sprite.Sprite):
         self.armor = armor
         self.start = 0
         self.gun_id = 0
-        self.sound_ch = sound.play(loops=-1)
-        if self.sound_ch is not None:
-            print(1)
-            self.sound_ch.pause()
 
     def get_damage(self, damage, f=False):
         if self.armor is not None:
@@ -282,7 +282,10 @@ class SpaceShip(pygame.sprite.Sprite):
             self.mask = pygame.mask.from_surface(self.image)
 
     def death(self):
-        self.sound_ch.stop()
+        try:
+            self.weapon.chanel.stop()
+        except AttributeError:
+            pass
 
     def draw_hp(self, screen):
         pygame.draw.rect(screen, (255, 0, 0), (self.rect.x, self.rect.y - self.rect.height * 0.15,
@@ -323,7 +326,7 @@ class SpaceShip(pygame.sprite.Sprite):
 
 class Buran(SpaceShip):
     def __init__(self, pos, hp, speed, money, score, weapon, armour):
-        super().__init__('Buran', pos, hp, speed, buran_images[0][0][0], fire_sound,
+        super().__init__('Buran', pos, hp, speed, buran_images[0][0][0],
                          weapon=weapon, armor=armour)
         self.money = money
         self.score = score
@@ -396,16 +399,22 @@ class Buran(SpaceShip):
         self.mask = pygame.mask.from_surface(self.image)
         if self.weapon is not None:
             if keys[pygame.K_SPACE]:
-                self.sound_ch.unpause()
+                try:
+                    self.weapon.chanel.unpause()
+                except AttributeError:
+                    pass
                 self.weapon.fire(shells, self, 1)
             else:
-                self.sound_ch.pause()
+                try:
+                    self.weapon.chanel.pause()
+                except AttributeError:
+                    pass
         self.draw_info(screen, size)
 
 
 class SpaceShuttle(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Space Shuttle', pos, 150, 150, space_shuttle[0], sound=fire_sound,
+        super().__init__('Space Shuttle', pos, 150, 150, space_shuttle[0],
                          weapon=MachineGun(), armor=Armour('steel plate', 1, 100, self))
         self.time_update = time()
         self.side = 0
@@ -418,11 +427,17 @@ class SpaceShuttle(SpaceShip):
             self.armor.draw_ammo(screen)
             if 0 <= (time() - self.time_update) <= 5:
                 if body.x - body.rect.width // 3 <= self.x <= body.x:
-                    self.sound_ch.unpause()
+                    try:
+                        self.weapon.chanel.unpause()
+                    except AttributeError:
+                        pass
                     self.weapon.fire(group=shells, ship=self, quarter=4)
                     self.side = 0
                 else:
-                    self.sound_ch.pause()
+                    try:
+                        self.weapon.chanel.pause()
+                    except AttributeError:
+                        pass
                     if body.x > self.x and self.hp > 0:
                         self.move('right', fps)
                         self.side = 1
@@ -432,11 +447,17 @@ class SpaceShuttle(SpaceShip):
                     else:
                         self.side = 0
             elif 5 <= (time() - self.time_update) <= 8:
-                self.sound_ch.unpause()
+                try:
+                    self.weapon.chanel.unpause()
+                except AttributeError:
+                    pass
                 self.weapon.fire(group=shells, ship=self, quarter=4)
                 self.side = 0
             elif (time() - self.time_update) >= 8:
-                self.sound_ch.pause()
+                try:
+                    self.weapon.chanel.pause()
+                except AttributeError:
+                    pass
                 self.time_update = time()
 
             self.image = space_shuttle[self.side]
@@ -445,7 +466,10 @@ class SpaceShuttle(SpaceShip):
             self.mask = pygame.mask.from_surface(self.image)
 
         else:
-            self.sound_ch.pause()
+            try:
+                self.weapon.chanel.pause()
+            except AttributeError:
+                pass
 
         if self.armor.k <= 0:
             self.move('down', fps)
@@ -457,7 +481,7 @@ class SpaceShuttle(SpaceShip):
 
 class DreamChaser(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Dream Chaser', pos, 300, 225, dream_chaser, sound=fire2_sound,
+        super().__init__('Dream Chaser', pos, 300, 225, dream_chaser,
                          weapon=PiercingRifle(), armor=Armour('steel plate', 2, 0.5, self))
         self.time_update = time()
         self.side = 1
@@ -476,7 +500,10 @@ class DreamChaser(SpaceShip):
                 self.move('right', fps)
             if self.x > 0 and self.side == 2:
                 self.move('left', fps)
-            self.sound_ch.unpause()
+            try:
+                self.weapon.chanel.unpause()
+            except AttributeError:
+                pass
             self.weapon.fire(group=shells, ship=self, quarter=4)
         elif self.max_hp * 0.5 <= self.hp <= self.max_hp * 0.75:
             if self.y < 250:
@@ -493,7 +520,10 @@ class DreamChaser(SpaceShip):
                     self.move('right', fps)
                 if self.x > 0 and self.side == 2:
                     self.move('left', fps)
-            self.sound_ch.unpause()
+            try:
+                self.weapon.chanel.unpause()
+            except AttributeError:
+                pass
             self.weapon.fire(group=shells, ship=self, quarter=4)
         elif self.max_hp * 0.25 <= self.hp <= self.max_hp * 0.5:
             if self.y < 400:
@@ -510,7 +540,10 @@ class DreamChaser(SpaceShip):
                         self.move('left', fps)
             elif (time() - self.time_update) >= 5:
                 self.time_update = time()
-            self.sound_ch.unpause()
+            try:
+                self.weapon.chanel.unpause()
+            except AttributeError:
+                pass
             self.weapon.fire(group=shells, ship=self, quarter=4)
         elif 0 < self.hp <= self.max_hp * 0.25:
             self.move('down', fps)
@@ -523,8 +556,10 @@ class DreamChaser(SpaceShip):
                 elif body.x < self.x and self.hp > 0:
                     self.move('left', fps)
         else:
-            self.sound_ch.pause()
-
+            try:
+                self.weapon.chanel.pause()
+            except AttributeError:
+                pass
         if time() - self.start >= 1 and self.start != 0:
             self.kill()
             self.start = 0
@@ -533,7 +568,7 @@ class DreamChaser(SpaceShip):
 
 class Titan34D(SpaceShip):
     def __init__(self, pos):
-        super().__init__('Titan 34D', pos, 100, 600, titan34D, sound=fire2_sound,
+        super().__init__('Titan 34D', pos, 100, 600, titan34D,
                          armor=Armour('titanium plating', 2, 0.9, self))
 
     def update(self, keys, fps, size, screen, body, shells):
@@ -542,6 +577,9 @@ class Titan34D(SpaceShip):
         if time() - self.start >= 1 and self.start != 0:
             self.kill()
             self.start = 0
+
+    def death(self):
+        pass
 
 
 class Asteroid(pygame.sprite.Sprite):
