@@ -6,6 +6,7 @@ from library.basic import Game
 def run():
     pygame.mixer.pre_init(44100, -32, 2, 1024)
     pygame.init()
+
     game = Game(screen)
     game.menu()
 

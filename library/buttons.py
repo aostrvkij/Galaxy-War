@@ -15,7 +15,7 @@ class Button(pygame.sprite.Sprite):
         mouse = pygame.mouse.get_pos()
         if self.rect.x < mouse[0] < self.rect.x + self.rect.width:
             if self.rect.y < mouse[1] < self.rect.y + self.rect.height:
-                if self.action == 'newgame':
+                if self.action == 'newgame' or self.action == 'restart':
                     game.game()
                 if self.action == 'congame':
                     game.run_pause = True
