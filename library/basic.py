@@ -1,5 +1,5 @@
 import library.classes
-from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN, CONGAME_BTN, OVER_BTN, INFO_BTN, SCREEN_HEIGHT, SCREEN_WIDTH
+from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN, CONGAME_BTN, OVER_BTN, INFO_BTN, SCREEN_HEIGHT, SCREEN_WIDTH, HIGHT_BTN, hight_score_players
 from pygame.display import flip
 from pygame.key import get_pressed
 from library import game_main
@@ -10,10 +10,11 @@ import pygame
 
 class Game:
     def __init__(self, screen):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            True, False, False, False, False, False
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+            True, False, False, False, False, False, False
         self.menu_btn = MENU_BTN
         self.over_btn = OVER_BTN
+        self.hight_btn = HIGHT_BTN
         self.settings_btn = SETTING_BTN
         self.libr_btns = LIBRARY_BTN
         self.congame_btns = CONGAME_BTN
@@ -23,16 +24,17 @@ class Game:
         self.exit = None
 
     def menu(self):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            True, False, False, False, False, False
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+            True, False, False, False, False, False, False
+
         while self.run_menu:
             self.screen.fill('black')
             self.menu_btn.draw(self.screen)
             flip()
             for e in event.get():
                 if e.type == pygame.QUIT:
-                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-                        False, False, False, False, False, False
+                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+                        False, False, False, False, False, False, False
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         pygame.quit()
@@ -41,8 +43,8 @@ class Game:
                         self.menu_btn.update(self)
 
     def game(self):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            False, True, False, False, False, False
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+            False, True, False, False, False, False, False
         info = read_info_ship()
         score, money = game_main.main(FPS, 70, 5, [info[1], info[2], info[3], info[4], eval(info[5]), eval(info[6])],
                                       self)
@@ -56,8 +58,8 @@ class Game:
             self.game_over(score)
 
     def game_over(self, score):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            False, False, True, False, False, False
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+            False, False, True, False, False, False, False
         while self.run_over:
             self.screen.fill('black')
             self.over_btn.draw(self.screen)
@@ -68,26 +70,63 @@ class Game:
             flip()
             for e in event.get():
                 if e.type == pygame.QUIT:
-                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-                        False, False, False, False, False, False
+                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+                        False, False, False, False, False, False, False
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         self.menu()
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if e.button == 1:
                         self.over_btn.update(self)
+    def hight_score(self):
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+            False, False, True, False, False, False, False
+        while self.run_over:
+            self.screen.fill('black')
+            self.hight_btn.draw(self.screen)
+            for i in range(1, 11):
+                name, score = hight_score_players[i - 1][0], hight_score_players[i - 1][1]
+                # Top score
+                text = pygame.font.SysFont('arial', 100).render(f'Top score', 1, (152, 146, 173))
+                self.screen.blit(text, (SCREEN_WIDTH // 1.7 - text.get_width(), 100))
+                #number
+                text = pygame.font.SysFont('arial', 40).render(f'{i}', 1, (152, 146, 173))
+                self.screen.blit(text, (SCREEN_WIDTH // 2.5, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                # -
+                text = pygame.font.SysFont('arial', 40).render(f'-', 1, (152, 146, 173))
+                self.screen.blit(text, (SCREEN_WIDTH // 2.3, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                # name
+                text = pygame.font.SysFont('arial', 40).render(f'{name}', 1, (152, 146, 173))
+                self.screen.blit(text, (SCREEN_WIDTH // 2.2, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                #score
+                text = pygame.font.SysFont('arial', 40).render(f'{score}', 1, (152, 146, 173))
+                self.screen.blit(text, (SCREEN_WIDTH - SCREEN_WIDTH // 2.25, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+
+            flip()
+            for e in event.get():
+                if e.type == pygame.QUIT:
+                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+                        False, False, False, False, False, False, False
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_ESCAPE:
+                        self.menu()
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        self.hight_btn.update(self)
+
 
     def settings(self):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            False, False, False, True, False, False
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+            False, False, False, True, False, False, False
         while self.run_settings:
             self.screen.fill('black')
+            self.settings_btn.update()
             self.settings_btn.draw(self.screen)
             flip()
             for e in event.get():
                 if e.type == pygame.QUIT:
-                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-                        False, False, False, False, False, False
+                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+                        False, False, False, False, False, False, False
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         self.menu()
@@ -96,8 +135,8 @@ class Game:
                         self.settings_btn.update(self)
 
     def pause_menu(self):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            False, False, False, False, False, True
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+            False, False, False, False, False, True, False
         while self.run_congame:
             self.screen.fill('black')
             self.congame_btns.draw(self.screen)
@@ -113,8 +152,8 @@ class Game:
 
             for e in event.get():
                 if e.type == pygame.QUIT:
-                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-                        False, False, False, False, False, False
+                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+                        False, False, False, False, False, False, False
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         self.run_congame = False
@@ -124,8 +163,8 @@ class Game:
                         self.congame_btns.update(self)
 
     def library(self):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            True, False, False, False, True, False
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+            False, False, False, False, True, False, False
 
         def info_of_shuttles(*some_info):
             run = True
@@ -139,15 +178,11 @@ class Game:
 
             for e in event.get():
                 if e.type == pygame.QUIT:
-                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-                        False, False, False, False, False, False
+                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+                        False, False, False, False, False, False, False
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         self.menu()
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if e.button == 1:
                         self.info_btn.update(self)
-
-    def Buran(self):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            True, False, False, False, True, False
