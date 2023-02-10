@@ -1,3 +1,5 @@
+import datetime
+
 import library.classes
 from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN, CONGAME_BTN, OVER_BTN, INFO_BTN, \
     SCREEN_HEIGHT, SCREEN_WIDTH, HIGHT_BTN
@@ -49,7 +51,7 @@ class Game:
         score, money = game_main.main(FPS, 70, 5, [info[1], info[2], info[3], info[4], eval(info[5]), eval(info[6])],
                                       self)
         self.run_game = False
-        add_cell('Player', score)
+        add_cell(str(datetime.datetime.today())[:16], score)
         update_cell(1, 'money', money)
         if self.exit:
             self.exit = None
@@ -128,29 +130,29 @@ class Game:
 
     def hight_score(self):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
-            False, False, True, False, False, False, False
-        while self.run_over:
+            False, False, False, False, False, False, True
+        while self.run_hight_score:
             self.screen.fill('black')
             self.hight_btn.draw(self.screen)
-            hight_score_players = read_score()[:10]
-            for i in range(1, 11):
-                name, score = hight_score_players[i - 1][0], hight_score_players[i - 1][1]
+            hight_score_players = sorted(read_score(), key=lambda x: x[1], reverse=True)[:10]
+            for i in range(0, len(hight_score_players)):
+                name, score = hight_score_players[i][0], hight_score_players[i][1]
                 # Top score
                 text = pygame.font.SysFont('arial', 100).render(f'Top score', 1, (152, 146, 173))
-                self.screen.blit(text, (SCREEN_WIDTH // 1.7 - text.get_width(), 100))
+                self.screen.blit(text, (int(SCREEN_WIDTH // 1.7 - text.get_width()), 100))
                 # number
-                text = pygame.font.SysFont('arial', 40).render(f'{i}', 1, (152, 146, 173))
-                self.screen.blit(text, (SCREEN_WIDTH // 2.5, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                text = pygame.font.SysFont('arial', 40).render(f'{(i + 1)}', 1, (152, 146, 173))
+                self.screen.blit(text, (int(SCREEN_WIDTH // 3.0), int(SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * (i + 1))))
                 # -
                 text = pygame.font.SysFont('arial', 40).render(f'-', 1, (152, 146, 173))
-                self.screen.blit(text, (SCREEN_WIDTH // 2.3, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                self.screen.blit(text, (int(SCREEN_WIDTH // 2.8), int(SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * (i + 1))))
                 # name
                 text = pygame.font.SysFont('arial', 40).render(f'{name}', 1, (152, 146, 173))
-                self.screen.blit(text, (SCREEN_WIDTH // 2.2, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                self.screen.blit(text, (int(SCREEN_WIDTH // 2.6), int(SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * (i + 1))))
                 # score
                 text = pygame.font.SysFont('arial', 40).render(f'{score}', 1, (152, 146, 173))
                 self.screen.blit(text,
-                                 (SCREEN_WIDTH - SCREEN_WIDTH // 2.25, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                                 (int(SCREEN_WIDTH - SCREEN_WIDTH // 2.55), int(SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * (i + 1))))
 
             flip()
             for e in event.get():

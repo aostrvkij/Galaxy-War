@@ -236,7 +236,6 @@ class PiercingRifle(Weapon):
             self.chanel = self.sound.play(loops=-1)
 
 
-
 class Armour:
     def __init__(self, name, armour_type, number, owner):
         self.name = name
@@ -570,6 +569,7 @@ class DreamChaser(SpaceShip):
                 elif body.x < self.x and self.hp > 0:
                     self.move('left', fps)
         else:
+            self.move('down', fps)
             try:
                 self.weapon.chanel.pause()
             except AttributeError:
