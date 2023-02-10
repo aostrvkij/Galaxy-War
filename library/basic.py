@@ -1,5 +1,6 @@
 import library.classes
-from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN, CONGAME_BTN, OVER_BTN, INFO_BTN
+from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN, CONGAME_BTN, OVER_BTN, INFO_BTN, \
+    SCREEN_HEIGHT, SCREEN_WIDTH
 from pygame.display import flip
 from pygame.key import get_pressed
 from library import game_main
@@ -61,6 +62,11 @@ class Game:
         while self.run_over:
             self.screen.fill('black')
             self.over_btn.draw(self.screen)
+            score_text = pygame.font.SysFont('impact', 100).render(f'{score}', 1, (152, 146, 173))
+            self.screen.blit(score_text,
+                             score_text.get_rect(center=(SCREEN_WIDTH // 2,
+                                                         SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 +
+                                                         SCREEN_HEIGHT * 0.08 * 0)))
             flip()
             for e in event.get():
                 if e.type == pygame.QUIT:

@@ -80,6 +80,10 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
         ships.draw(screen)
         shells.update(fps)
         ships.update(keys, fps, size, screen, ship, shells)
+        score_text = pygame.font.SysFont('impact', 30).render(f'{ship.score * int(time.time() - start)}', 1,
+                                                              (152, 146, 173))
+        game.screen.blit(score_text,
+                         score_text.get_rect(center=(size[0] // 2, size[1] * 0.025)))
         clock.tick(fps)
         pygame.display.flip()
     pygame.mixer.music.stop()

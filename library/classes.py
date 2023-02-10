@@ -46,6 +46,8 @@ hp_half = load_image('hp_half.png')
 hp_full = load_image('hp_full.png')
 boom = load_image('boom.png')
 
+boom_sound = pygame.mixer.Sound('Images/data/boom.wav')
+boom_sound.set_volume(0.1)
 
 
 class Ammunition(pygame.sprite.Sprite):
@@ -196,6 +198,7 @@ class MachineGun(Weapon):
         self.sound = pygame.mixer.Sound('Images/data/fire_sound_1.wav')
         self.sound.set_volume(0.05)
         self.chanel = self.sound.play(loops=-1)
+        print(self.chanel, self.sound)
         self.chanel.pause()
 
     def fire(self, group, ship, quarter):
@@ -221,6 +224,7 @@ class PiercingRifle(Weapon):
         self.sound = pygame.mixer.Sound('Images/data/fire_sound_2.wav')
         self.sound.set_volume(0.08)
         self.chanel = self.sound.play(loops=-1)
+        print(self.chanel, self.sound.play(loops=-1))
         self.chanel.pause()
 
 
@@ -275,6 +279,7 @@ class SpaceShip(pygame.sprite.Sprite):
             damage = self.armor.get_damage(damage, f)
         self.hp -= damage
         if self.hp <= 0:
+            boom_sound.play()
             self.start = time()
             self.image = pygame.transform.scale(boom, (self.rect.width, self.rect.width))
             self.rect = self.image.get_rect()
