@@ -21,19 +21,19 @@ var_menu = [
     Button('Images/btns/hightscore.png', 'hightscore', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
            SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 1),
-    Button('Images/btns/shop.png', 'shop', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
-           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 0),
     Button('Images/btns/settings.png', 'settgame', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 1),
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 0),
     Button('Images/btns/library.png', 'library', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 2),
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 1),
     Button('Images/btns/exit.png', 'exit', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 3)]
-
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 2),
+    # Button('', '', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
+    #        SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
+    #        SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 3)
+]
 
 var_over = [
     Button('Images/btns/restart.png', 'restart', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,

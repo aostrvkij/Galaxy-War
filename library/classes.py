@@ -198,8 +198,12 @@ class MachineGun(Weapon):
         self.sound = pygame.mixer.Sound('Images/data/fire_sound_1.wav')
         self.sound.set_volume(0.05)
         self.chanel = self.sound.play(loops=-1)
-        print(self.chanel, self.sound)
-        self.chanel.pause()
+        try:
+            self.chanel.pause()
+        except AttributeError:
+            self.sound = pygame.mixer.Sound('Images/data/fire_sound_1.wav')
+            self.sound.set_volume(0.05)
+            self.chanel = self.sound.play(loops=-1)
 
     def fire(self, group, ship, quarter):
         if time() - self.star_fire >= self.rate_of_fire:
@@ -224,8 +228,13 @@ class PiercingRifle(Weapon):
         self.sound = pygame.mixer.Sound('Images/data/fire_sound_2.wav')
         self.sound.set_volume(0.08)
         self.chanel = self.sound.play(loops=-1)
-        print(self.chanel, self.sound.play(loops=-1))
-        self.chanel.pause()
+        try:
+            self.chanel.pause()
+        except AttributeError:
+            self.sound = pygame.mixer.Sound('Images/data/fire_sound_2.wav')
+            self.sound.set_volume(0.05)
+            self.chanel = self.sound.play(loops=-1)
+
 
 
 class Armour:

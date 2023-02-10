@@ -8,8 +8,8 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
     pygame.mixer.music.load("Images/data/music.mp3")
     start = time.time()
     pusk = time.time()
-    pygame.mixer.pre_init(44100, -32, 2, 1024)
     pygame.init()
+    pygame.mixer.pre_init(44100, -32, 100, 1024)
     screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h))
     size = screen.get_size()
     run = True
@@ -21,7 +21,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
     ships.add(ship)
     # ship.equip_gun(MachineGun())
     pygame.mixer.music.play(loops=-1, start=5)
-    pygame.mixer.music.set_volume(0.0)
+    pygame.mixer.music.set_volume(0.2)
     while run:
         pygame.mixer.music.unpause()
         keys = pygame.key.get_pressed()

@@ -4,7 +4,7 @@ from library.basic import Game
 
 
 def run():
-    pygame.mixer.pre_init(44100, -16 * 5, 5, 512 * 5)
+    pygame.mixer.pre_init(44100, -16 * 5, 100, 512 * 5)
     pygame.init()
     game = Game(screen)
     game.menu()
