@@ -23,6 +23,8 @@ class Button(pygame.sprite.Sprite):
                     game.settings()
                 if self.action == 'menu':
                     game.menu()
+                if self.action == 'hight_score':
+                    game.hight_score()
                 if self.action == 'library':
                     game.library()
                 if self.action == 'exit':

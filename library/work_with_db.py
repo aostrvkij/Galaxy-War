@@ -11,7 +11,7 @@ def read_info_ship():
 
 
 def read_score():
-    con = sqlite3.connect('library/DataGame.db')
+    con = sqlite3.connect('DataGame.db')
     cur = con.cursor()
     result = cur.execute("""SELECT * FROM Height_score""").fetchall()
     con.commit()
@@ -34,3 +34,6 @@ def add_cell(name, score):
                     VALUES ('{name}', {score})""")
     con.commit()
     con.close()
+
+
+print(read_score())

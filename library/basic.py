@@ -1,6 +1,6 @@
 import library.classes
 from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN, CONGAME_BTN, OVER_BTN, INFO_BTN, \
-    SCREEN_HEIGHT, SCREEN_WIDTH
+    SCREEN_HEIGHT, SCREEN_WIDTH, HIGHT_BTN
 from pygame.display import flip
 from pygame.key import get_pressed
 from library import game_main
@@ -19,6 +19,7 @@ class Game:
         self.libr_btns = LIBRARY_BTN
         self.congame_btns = CONGAME_BTN
         self.info_btn = INFO_BTN
+        self.hight_btn = HIGHT_BTN
         self.screen = screen
         self.run_pause = None
         self.exit = None
@@ -124,6 +125,44 @@ class Game:
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if e.button == 1:
                         self.congame_btns.update(self)
+
+    def hight_score(self):
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+            False, False, True, False, False, False, False
+        while self.run_over:
+            self.screen.fill('black')
+            self.hight_btn.draw(self.screen)
+            hight_score_players = read_score()[:10]
+            for i in range(1, 11):
+                name, score = hight_score_players[i - 1][0], hight_score_players[i - 1][1]
+                # Top score
+                text = pygame.font.SysFont('arial', 100).render(f'Top score', 1, (152, 146, 173))
+                self.screen.blit(text, (SCREEN_WIDTH // 1.7 - text.get_width(), 100))
+                # number
+                text = pygame.font.SysFont('arial', 40).render(f'{i}', 1, (152, 146, 173))
+                self.screen.blit(text, (SCREEN_WIDTH // 2.5, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                # -
+                text = pygame.font.SysFont('arial', 40).render(f'-', 1, (152, 146, 173))
+                self.screen.blit(text, (SCREEN_WIDTH // 2.3, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                # name
+                text = pygame.font.SysFont('arial', 40).render(f'{name}', 1, (152, 146, 173))
+                self.screen.blit(text, (SCREEN_WIDTH // 2.2, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+                # score
+                text = pygame.font.SysFont('arial', 40).render(f'{score}', 1, (152, 146, 173))
+                self.screen.blit(text,
+                                 (SCREEN_WIDTH - SCREEN_WIDTH // 2.25, SCREEN_HEIGHT // 4 + SCREEN_HEIGHT * 0.05 * i))
+
+            flip()
+            for e in event.get():
+                if e.type == pygame.QUIT:
+                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score = \
+                        False, False, False, False, False, False, False
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_ESCAPE:
+                        self.menu()
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        self.hight_btn.update(self)
 
     def library(self):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
