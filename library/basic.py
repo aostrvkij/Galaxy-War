@@ -2,7 +2,7 @@ import datetime
 
 import library.classes
 from library.config import FPS, MENU_BTN, SETTING_BTN, LIBRARY_BTN, CONGAME_BTN, OVER_BTN, INFO_BTN, \
-    SCREEN_HEIGHT, SCREEN_WIDTH, HIGHT_BTN
+    SCREEN_HEIGHT, SCREEN_WIDTH, HIGHT_BTN, INFO_SHATLE_BTN
 from pygame.display import flip
 from pygame.key import get_pressed
 from library import game_main
@@ -13,8 +13,8 @@ import pygame
 
 class Game:
     def __init__(self, screen):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            True, False, False, False, False, False
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_info = \
+            True, False, False, False, False, False, False
         self.menu_btn = MENU_BTN
         self.over_btn = OVER_BTN
         self.settings_btn = SETTING_BTN
@@ -22,6 +22,7 @@ class Game:
         self.congame_btns = CONGAME_BTN
         self.info_btn = INFO_BTN
         self.hight_btn = HIGHT_BTN
+        self.info_shatle_btn = INFO_SHATLE_BTN
         self.screen = screen
         self.run_pause = None
         self.exit = None
@@ -167,13 +168,8 @@ class Game:
                         self.hight_btn.update(self)
 
     def library(self):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            True, False, False, False, True, False
-
-        def info_of_shuttles(*some_info):
-            run = True
-            while run:
-                self.screen.fill('black')
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score, self.run_info = \
+                        False, False, False, False, True, False, False, False
 
         while self.run_library:
             self.screen.fill('black')
@@ -191,6 +187,26 @@ class Game:
                     if e.button == 1:
                         self.info_btn.update(self)
 
-    def Buran(self):
-        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
-            True, False, False, False, True, False
+    def info_shatle(self, name, info, png):
+        self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score, self.run_info = \
+                        False, False, False, False, False, False, False, True
+        shatle_image = pygame.transform.scale(pygame.image.load(png), (SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.8))
+        shatle_image_rect = shatle_image.get_rect()
+        shatle_image_rect.x, shatle_image_rect.y = SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.1
+
+
+        while self.run_info:
+            self.screen.fill('black')
+            self.screen.blit(shatle_image, shatle_image_rect)
+            self.info_shatle_btn.draw(self.screen)
+            flip()
+            for e in event.get():
+                if e.type == pygame.QUIT:
+                    self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score, self.run_info = \
+                        False, False, False, False, False, False, False
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_ESCAPE:
+                        self.menu()
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        self.info_shatle_btn.update(self)

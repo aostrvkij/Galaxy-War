@@ -32,3 +32,5 @@ class Button(pygame.sprite.Sprite):
                         False, False, False, False, False, False, False
                 if self.action == 'exit_2':
                     game.exit = True
+                if self.action == 'buran':
+                    game.info_shatle('buran', [1, 2, 3], 'Images/btns/congame.png')
