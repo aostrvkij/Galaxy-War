@@ -23,6 +23,7 @@ class Game:
         self.info_btn = INFO_BTN
         self.hight_btn = HIGHT_BTN
         self.info_shatle_btn = INFO_SHATLE_BTN
+        self.complexity = 10
         self.screen = screen
         self.run_pause = None
         self.exit = None
@@ -89,6 +90,10 @@ class Game:
         while self.run_settings:
             self.screen.fill('black')
             self.settings_btn.draw(self.screen)
+            text = pygame.font.SysFont('impact', 50).render(f'{self.complexity}', 1, (152, 146, 173))
+            self.screen.blit(text, (
+                SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.085,
+                SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 2))
             flip()
             for e in event.get():
                 if e.type == pygame.QUIT:

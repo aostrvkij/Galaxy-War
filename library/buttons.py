@@ -21,6 +21,10 @@ class Button(pygame.sprite.Sprite):
                     game.run_pause = True
                 if self.action == 'settgame':
                     game.settings()
+                if self.action == 'compl+':
+                    game.complexity += 1
+                if self.action == 'compl-':
+                    game.complexity -= 1
                 if self.action == 'menu':
                     game.menu()
                 if self.action == 'hightscore':

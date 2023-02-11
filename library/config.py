@@ -46,12 +46,43 @@ var_over = [
            SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.08 * 2)]
 
 var_sett = [
-    Button('Images/btns/newgame.png', 'newgame', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
+# 1
+    Button('Images/btns/minus.png', 'compl-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 2),
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.15 * 1),
+
+    Button('Images/btns/plus.png', 'compl+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.20 // 3 * 2,
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.15 * 1),
+# 2
+    Button('Images/btns/minus.png', 'compl-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.15 * 0),
+
+    Button('Images/btns/plus.png', 'compl+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.20 // 3 * 2,
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.15 * 0),
+# 3
+    Button('Images/btns/minus.png', 'compl-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 1),
+
+    Button('Images/btns/plus.png', 'compl+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.20 // 3 * 2,
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 1),
+# 4
+    Button('Images/btns/minus.png', 'compl-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 2),
+
+    Button('Images/btns/plus.png', 'compl+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.20 // 3 * 2,
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 2),
+
+# EXIT
     Button('Images/btns/exit.png', 'menu', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08)]
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 3)]
 
 var_cong = [
     Button('Images/btns/congame.png', 'congame', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
