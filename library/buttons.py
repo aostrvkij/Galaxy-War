@@ -43,4 +43,4 @@ class Button(pygame.sprite.Sprite):
                 if self.action == 'dream':
                     game.info_shatle('Dream Chaser', 'Images/btn_info/img_3.png', 'Images/btn_info/img_2.png')
                 if self.action == 'sput':
-                    game.info_shatle('Sputnik 1', 'Images/btn_info/img_8.png', 'Images/btn_info/img_7.png')
+                    game.info_shatle('Sputnik 1', 'Images/btn_info/img_8.png', 'Images/btn_info/img_6.png')

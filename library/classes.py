@@ -139,7 +139,7 @@ class ExplosiveAmmunition(Ammunition):
                 self.quarter = 3
                 self.speed = f
                 self.start = time()
-                self.damage = 3
+                self.damage = 1
                 self.image = pygame.transform.scale(boom, (self.radios * 2, self.radios * 2))
                 self.rect = self.image.get_rect()
                 self.x, self.y = body.x + (body.rect.width // 2) - (self.rect.width // 2), \
@@ -310,7 +310,7 @@ class SpaceShip(pygame.sprite.Sprite):
             body.get_damage(self.hp)
             self.get_damage(damage)
         elif pygame.sprite.collide_mask(self, body) and body.hp > 0:
-            body.get_damage(5)
+            body.get_damage(3)
 
     def move(self, direction, fps):
         if direction == 'left':

@@ -35,7 +35,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                     pygame.mixer.pause()
                     run = game.pause_menu()
 
-        if len(ships) - 1 - count_enemy < count_asteroid:
+        if len(ships) - 1 - count_enemy < count_asteroid and (time.time() - pusk) >= 0.5:
             # if (time.time() - start) % 1 == 0:
             x = randint(1, 100)
             if 1 <= x <= 85:
@@ -48,7 +48,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                 ships.add(AsteroidGold((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
                                        randint(10, 20)))
 
-        if len(ships) - 1 - count_asteroid < count_enemy and (time.time() - pusk) >= 3:
+        if len(ships) - 1 - count_asteroid < count_enemy and (time.time() - pusk) >= 1.2:
             x = randint(1, 100)
             if 91 <= x <= 100:
                 ships.add(Titan34D((randint(int(ship.x) - 20, int(ship.x) + 20), -100)))

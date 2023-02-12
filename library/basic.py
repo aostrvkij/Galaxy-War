@@ -50,7 +50,7 @@ class Game:
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame = \
             False, True, False, False, False, False
         info = read_info_ship()
-        score, money = game_main.main(FPS, 70, 5, [info[1], info[2], info[3], info[4], eval(info[5]), eval(info[6])],
+        score, money = game_main.main(FPS, 70, self.complexity, [info[1], info[2], info[3], info[4], eval(info[5]), eval(info[6])],
                                       self)
         self.run_game = False
         add_cell(str(datetime.datetime.today())[:16], score)
@@ -195,11 +195,12 @@ class Game:
     def info_shatle(self, name, info, png):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score, self.run_info = \
                         False, False, False, False, False, False, False, True
-        shatle_image = pygame.transform.scale(pygame.image.load(png), (SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.09, SCREEN_HEIGHT * 0.4))
+        shatle_image = pygame.transform.scale(pygame.image.load(png), (int(SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.09),
+                                                                       int(SCREEN_HEIGHT * 0.4)))
         shatle_image_rect = shatle_image.get_rect()
         shatle_image_rect.x, shatle_image_rect.y = 750, 300
         info_image = pygame.transform.scale(pygame.image.load(info),
-                                              (SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.03, SCREEN_HEIGHT * 0.5))
+                                              (int(SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.03), int(SCREEN_HEIGHT * 0.5)))
         info_image_rect = info_image.get_rect()
         info_image_rect.x, info_image_rect.y = 150, 300
 
