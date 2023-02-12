@@ -93,13 +93,16 @@ var_cong = [
            SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08)]
 
 var_info = [
+    Button('Images/btn_info/Titan_34D.png', 'titan', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
+           SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
+           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 3),
     Button('Images/btn_info/Buran1.png', 'buran', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
            SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 2),
     Button('Images/btn_info/Dream_Chaser.png', 'dream', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
            SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 1),
-    Button('Images/btn_info/Sputnik_1.png', 'sput', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
+    Button('Images/btn_info/NASA Shuttle.png', 'shutl', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
            SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.08 * 0),
     Button('Images/btn_info/Uragan.png', 'uragan', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
@@ -134,3 +137,4 @@ for i in var_hight:
     HIGHT_BTN.add(i)
 for i in var_info_shatle:
     INFO_SHATLE_BTN.add(i)
+
