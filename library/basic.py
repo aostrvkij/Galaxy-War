@@ -195,14 +195,21 @@ class Game:
     def info_shatle(self, name, info, png):
         self.run_menu, self.run_game, self.run_over, self.run_settings, self.run_library, self.run_congame, self.run_hight_score, self.run_info = \
                         False, False, False, False, False, False, False, True
-        shatle_image = pygame.transform.scale(pygame.image.load(png), (SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.8))
+        shatle_image = pygame.transform.scale(pygame.image.load(png), (SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.09, SCREEN_HEIGHT * 0.4))
         shatle_image_rect = shatle_image.get_rect()
-        shatle_image_rect.x, shatle_image_rect.y = SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.1
+        shatle_image_rect.x, shatle_image_rect.y = 750, 300
+        info_image = pygame.transform.scale(pygame.image.load(info),
+                                              (SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.03, SCREEN_HEIGHT * 0.5))
+        info_image_rect = info_image.get_rect()
+        info_image_rect.x, info_image_rect.y = 150, 300
 
 
         while self.run_info:
             self.screen.fill('black')
             self.screen.blit(shatle_image, shatle_image_rect)
+            self.screen.blit(info_image, info_image_rect)
+            text = pygame.font.SysFont('arial', 100).render(f'{name}', 1, (152, 146, 173))
+            self.screen.blit(text, (int(SCREEN_WIDTH // 1.7 - text.get_width()), 100))
             self.info_shatle_btn.draw(self.screen)
             flip()
             for e in event.get():

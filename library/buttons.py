@@ -37,4 +37,10 @@ class Button(pygame.sprite.Sprite):
                 if self.action == 'exit_2':
                     game.exit = True
                 if self.action == 'buran':
-                    game.info_shatle('buran', [1, 2, 3], 'Images/btns/congame.png')
+                    game.info_shatle('Buran', 'Images/btn_info/img_5.png' , 'Images/btn_info/image_prev_ui.png')
+                if self.action == 'uragan':
+                    game.info_shatle('Uragan', 'Images/btn_info/image (1).png', 'Images/btn_info/img1.png')
+                if self.action == 'dream':
+                    game.info_shatle('Dream Chaser', 'Images/btn_info/img_3.png', 'Images/btn_info/img_2.png')
+                if self.action == 'sput':
+                    game.info_shatle('Sputnik 1', 'Images/btn_info/img_8.png', 'Images/btn_info/img_7.png')
