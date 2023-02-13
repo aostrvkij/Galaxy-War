@@ -23,7 +23,10 @@ class Game:
         self.info_btn = INFO_BTN
         self.hight_btn = HIGHT_BTN
         self.info_shatle_btn = INFO_SHATLE_BTN
-        self.complexity = 10
+        self.count_enemy = 10
+        self.spawn_enemy = 5
+        self.count_asteroids = 25
+        self.spawn_asteroids = 5
         self.screen = screen
         self.run_pause = None
         self.exit = None
@@ -90,10 +93,47 @@ class Game:
         while self.run_settings:
             self.screen.fill('black')
             self.settings_btn.draw(self.screen)
-            text = pygame.font.SysFont('impact', 50).render(f'{self.complexity}', 1, (152, 146, 173))
-            self.screen.blit(text, (
+# КОЛИЧЕСТВО ВРАГОВ
+            count_enemy = pygame.font.SysFont('impact', int(SCREEN_HEIGHT * 0.05)).render(f'{self.count_enemy}', 1, (152, 146, 173))
+            self.screen.blit(count_enemy, (
                 SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.085,
-                SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 2))
+                0 + SCREEN_HEIGHT * 0.15 - SCREEN_HEIGHT * 0.2 * 0))
+
+            text_count_enemy = pygame.font.SysFont('impact', int(SCREEN_HEIGHT * 0.05)).render(f'Количество врагов', 1, (152, 146, 173))
+            self.screen.blit(text_count_enemy, (
+                (SCREEN_WIDTH // 2 + 20 * int(SCREEN_HEIGHT * 0.05) // 2) // 2,
+                0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * -0.5))
+
+# КД СПАВНА ВРАГОВ
+            spawn_enemy = pygame.font.SysFont('impact', int(SCREEN_HEIGHT * 0.05)).render(f'{self.spawn_enemy}', 1, (152, 146, 173))
+            self.screen.blit(spawn_enemy, (
+                SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.085,
+                0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 1))
+
+            text_spawn_enemy = pygame.font.SysFont('impact', int(SCREEN_HEIGHT * 0.05)).render(f'Кд спавна врагов', 1, (152, 146, 173))
+            self.screen.blit(text_spawn_enemy, (
+                (SCREEN_WIDTH // 2 + 20 * int(SCREEN_HEIGHT * 0.05) // 2) // 2,
+                0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 0.5))
+# КОЛИЧЕСТВО АСТЕРОИДОВ
+            count_astoroids = pygame.font.SysFont('impact', int(SCREEN_HEIGHT * 0.05)).render(f'{self.count_asteroids}', 1, (152, 146, 173))
+            self.screen.blit(count_astoroids, (
+                SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.085,
+                0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 2))
+            text_count_enemy = pygame.font.SysFont('impact', int(SCREEN_HEIGHT * 0.05)).render(f'Количество астероидов', 1, (152, 146, 173))
+            self.screen.blit(text_count_enemy, (
+                (SCREEN_WIDTH // 2 + 15 * int(SCREEN_HEIGHT * 0.05) // 2) // 2,
+                0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 1.5))
+# КД СПАВНА АСТЕРОИДОВ
+            spawn_astoroids = pygame.font.SysFont('impact', int(SCREEN_HEIGHT * 0.05)).render(f'{self.spawn_asteroids}', 1, (152, 146, 173))
+            self.screen.blit(spawn_astoroids, (
+                SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.085,
+                0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 3))
+
+            text_count_enemy = pygame.font.SysFont('impact', int(SCREEN_HEIGHT * 0.05)).render(f'КД спавна астероидов', 1, (152, 146, 173))
+            self.screen.blit(text_count_enemy, (
+                (SCREEN_WIDTH // 2 + 16 * int(SCREEN_HEIGHT * 0.05) // 2) // 2,
+                0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 2.5))
+
             flip()
             for e in event.get():
                 if e.type == pygame.QUIT:

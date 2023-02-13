@@ -21,10 +21,29 @@ class Button(pygame.sprite.Sprite):
                     game.run_pause = True
                 if self.action == 'settgame':
                     game.settings()
-                if self.action == 'compl+':
-                    game.complexity += 1
+
+# Кнопки настроек
                 if self.action == 'compl-':
-                    game.complexity -= 1
+                    if game.count_enemy > 0:
+                        game.count_enemy -= 1
+                if self.action == 'compl+':
+                    game.count_enemy += 1
+                if self.action == 'spawn_enemy-':
+                    if game.spawn_enemy > 0:
+                        game.spawn_enemy -= 1
+                if self.action == 'spawn_enemy+':
+                    game.spawn_enemy += 1
+                if self.action == 'count_asteroid-':
+                    if game.count_asteroids > 0:
+                        game.count_asteroids -= 1
+                if self.action == 'count_asteroid+':
+                    game.count_asteroids += 1
+                if self.action == 'spawn_asteroid-':
+                    if game.spawn_asteroids > 0:
+                        game.spawn_asteroids -= 1
+                if self.action == 'spawn_asteroid+':
+                    game.spawn_asteroids += 1
+
                 if self.action == 'menu':
                     game.menu()
                 if self.action == 'hightscore':

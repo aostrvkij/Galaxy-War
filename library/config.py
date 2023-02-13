@@ -49,40 +49,42 @@ var_sett = [
 # 1
     Button('Images/btns/minus.png', 'compl-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.15 * 1),
+           0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 0),
 
     Button('Images/btns/plus.png', 'compl+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.20 // 3 * 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 - SCREEN_HEIGHT * 0.15 * 1),
+           0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 0),
 # 2
-    Button('Images/btns/minus.png', 'compl-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+    Button('Images/btns/minus.png', 'spawn_enemy-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.15 * 0),
+           0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 1),
 
-    Button('Images/btns/plus.png', 'compl+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+    Button('Images/btns/plus.png', 'spawn_enemy+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.20 // 3 * 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.15 * 0),
+           0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 1),
 # 3
-    Button('Images/btns/minus.png', 'compl-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+    Button('Images/btns/minus.png', 'count_asteroid-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 1),
+           0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 2),
 
-    Button('Images/btns/plus.png', 'compl+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+    Button('Images/btns/plus.png', 'count_asteroid+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.20 // 3 * 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 1),
+           0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 2),
 # 4
-    Button('Images/btns/minus.png', 'compl-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+    Button('Images/btns/minus.png', 'spawn_asteroid-', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 2),
+           0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 3),
 
-    Button('Images/btns/plus.png', 'compl+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
+    Button('Images/btns/plus.png', 'spawn_asteroid+', SCREEN_WIDTH * 0.20 // 3, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2 + SCREEN_WIDTH * 0.20 // 3 * 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 2),
+           0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 3),
+
+
 
 # EXIT
     Button('Images/btns/exit.png', 'menu', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
            SCREEN_WIDTH // 2 - SCREEN_WIDTH * 0.2 // 2,
-           SCREEN_HEIGHT // 2 - SCREEN_HEIGHT * 0.08 // 2 + SCREEN_HEIGHT * 0.125 * 3)]
+           0 + SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.2 * 3.5)]
 
 var_cong = [
     Button('Images/btns/congame.png', 'congame', SCREEN_WIDTH * 0.20, SCREEN_HEIGHT * 0.08,
