@@ -4,10 +4,11 @@ from random import randint
 import time
 
 
-def main(FPS, count_asteroid, count_enemy, data_ship, game):
+def main(FPS, count, data_ship, game):
     pygame.mixer.music.load("Images/data/music.mp3")
     start = time.time()
     pusk = time.time()
+    pusk_as = time.time()
     pygame.init()
     pygame.mixer.pre_init(44100, -32, 100, 1024)
     screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h))
@@ -35,7 +36,7 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
                     pygame.mixer.pause()
                     run = game.pause_menu()
 
-        if len(ships) - 1 - count_enemy < count_asteroid and (time.time() - pusk) >= 0.5:
+        if len(ships) - 1 - count[1] < count[0] and (time.time() - pusk_as) >= count[2]:
             # if (time.time() - start) % 1 == 0:
             x = randint(1, 100)
             if 1 <= x <= 85:
@@ -47,14 +48,15 @@ def main(FPS, count_asteroid, count_enemy, data_ship, game):
             elif 96 <= x <= 100:
                 ships.add(AsteroidGold((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
                                        randint(10, 20)))
+            pusk_as = time.time()
 
-        if len(ships) - 1 - count_asteroid < count_enemy and (time.time() - pusk) >= 1.2:
+        if len(ships) - 1 - count[0] < count[1] and (time.time() - pusk) >= count[3]:
             x = randint(1, 100)
-            if 91 <= x <= 100:
+            if 1 <= x <= 20:
                 ships.add(Titan34D((randint(int(ship.x) - 20, int(ship.x) + 20), -100)))
-            elif 61 <= x <= 90:
+            elif 21 <= x <= 35:
                 ships.add(SpaceShuttle((randint(0, size[0] - 60), -10)))
-            elif 41 <= x <= 60:
+            elif 36 <= x <= 60:
                 ships.add(DreamChaser((randint(0, size[0] - 80), 0)))
             pusk = time.time()
 
