@@ -23,6 +23,8 @@ def main(FPS, count, data_ship, game):
     # ship.equip_gun(MachineGun())
     pygame.mixer.music.play(loops=-1, start=5)
     pygame.mixer.music.set_volume(0.2)
+    count_enemy = 0
+    count_asteroids = 0
     while run:
         pygame.mixer.music.unpause()
         keys = pygame.key.get_pressed()
@@ -36,9 +38,10 @@ def main(FPS, count, data_ship, game):
                     pygame.mixer.pause()
                     run = game.pause_menu()
 
-        if len(ships) - 1 - count[1] < count[0] and (time.time() - pusk_as) >= count[2]:
+        if count_asteroids < count[0] and (time.time() - pusk_as) >= count[2]:
             # if (time.time() - start) % 1 == 0:
             x = randint(1, 100)
+            count_asteroids += 1
             if 1 <= x <= 85:
                 ships.add(Asteroid((randint(0, size[0] - 60), randint(-250, -100)), randint(30, 100),
                                    randint(25, 50)))
@@ -50,14 +53,17 @@ def main(FPS, count, data_ship, game):
                                        randint(10, 20)))
             pusk_as = time.time()
 
-        if len(ships) - 1 - count[0] < count[1] and (time.time() - pusk) >= count[3]:
+        if count_enemy < count[1] and (time.time() - pusk) >= count[3]:
             x = randint(1, 100)
             if 1 <= x <= 20:
                 ships.add(Titan34D((randint(int(ship.x) - 20, int(ship.x) + 20), -100)))
+                count_enemy += 1
             elif 21 <= x <= 35:
                 ships.add(SpaceShuttle((randint(0, size[0] - 60), -10)))
+                count_enemy += 1
             elif 36 <= x <= 60:
                 ships.add(DreamChaser((randint(0, size[0] - 80), 0)))
+                count_enemy += 1
             pusk = time.time()
 
         if ship.hp <= 0:
@@ -66,17 +72,53 @@ def main(FPS, count, data_ship, game):
             if pygame.sprite.spritecollide(bullet, ships, False):
                 for i in pygame.sprite.spritecollide(bullet, ships, False):
                     bullet.give_damage(i)
+                    if i.hp is False:
+                        if type(i) == library.classes.Asteroid or type(i) == library.classes.AsteroidIron or \
+                                type(i) == library.classes.AsteroidGold:
+                            i.kill()
+                            count_asteroids -= 1
+                        else:
+                            i.kill()
+                            count_enemy -= 1
+                        i.death()
+                        ships.remove(i)
             if bullet.y > size[1] + 20 or bullet.y < - 20:
                 shells.remove(bullet)
 
         for s in ships:
             if s.rect.y > size[1]:
+                if type(s) == library.classes.Asteroid or type(s) == library.classes.AsteroidIron or \
+                        type(s) == library.classes.AsteroidGold:
+                    count_asteroids -= 1
+                else:
+                    count_enemy -= 1
                 s.death()
                 ships.remove(s)
             if pygame.sprite.spritecollide(s, ships, False):
                 for i in pygame.sprite.spritecollide(s, ships, False):
                     if s is not i:
                         s.give_damage(i)
+                        if s.hp is False:
+                            if type(s) == library.classes.Asteroid or type(s) == library.classes.AsteroidIron or \
+                                    type(s) == library.classes.AsteroidGold:
+                                s.kill()
+                                count_asteroids -= 1
+                            else:
+                                s.kill()
+                                count_enemy -= 1
+                            s.death()
+                            ships.remove(s)
+
+                        if i.hp is False:
+                            if type(i) == library.classes.Asteroid or type(i) == library.classes.AsteroidIron or \
+                                    type(i) == library.classes.AsteroidGold:
+                                i.kill()
+                                count_asteroids -= 1
+                            else:
+                                i.kill()
+                                count_enemy -= 1
+                            i.death()
+                            ships.remove(i)
 
         shells.draw(screen)
         ships.draw(screen)
@@ -91,3 +133,4 @@ def main(FPS, count, data_ship, game):
     pygame.mixer.music.stop()
     pygame.mixer.pause()
     return ship.score * int(time.time() - start), ship.money
+# muhamad ge(ni)y

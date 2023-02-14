@@ -333,8 +333,10 @@ class SpaceShip(pygame.sprite.Sprite):
     def equip_armour(self, armour):
         self.armor = armour
 
-    def update(self, keys, fps, size, screen, body):
-        pass
+    def update(self, keys, fps, size, screen, body, shells):
+        if time() - self.start >= 1 and self.start != 0:
+            self.hp = False
+            self.start = 0
 
 
 class Buran(SpaceShip):
@@ -486,10 +488,7 @@ class SpaceShuttle(SpaceShip):
 
         if self.armor.k <= 0:
             self.move('down', fps)
-
-        if time() - self.start >= 1 and self.start != 0:
-            self.kill()
-            self.start = 0
+        super().update(keys, fps, size, screen, body, shells)
 
 
 class DreamChaser(SpaceShip):
@@ -574,9 +573,7 @@ class DreamChaser(SpaceShip):
                 self.weapon.chanel.pause()
             except AttributeError:
                 pass
-        if time() - self.start >= 1 and self.start != 0:
-            self.kill()
-            self.start = 0
+        super().update(keys, fps, size, screen, body, shells)
         # self.weapon.fire(group=shells, ship=self, quarter=4)
 
 
@@ -588,9 +585,7 @@ class Titan34D(SpaceShip):
     def update(self, keys, fps, size, screen, body, shells):
         self.move('down', fps)
         self.draw_hp(screen)
-        if time() - self.start >= 1 and self.start != 0:
-            self.kill()
-            self.start = 0
+        super().update(keys, fps, size, screen, body, shells)
 
     def death(self):
         pass
@@ -627,7 +622,7 @@ class Asteroid(pygame.sprite.Sprite):
     def get_damage(self, damage):
         self.hp -= damage
         if self.hp <= 0:
-            self.kill()
+            self.hp = False
         if self.hp >= 10:
             self.x, self.y = self.rect.x + ((self.rect.width - 2 * self.hp) // 2), \
                              self.rect.y + ((self.rect.width - 2 * self.hp) // 2)
