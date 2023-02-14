@@ -30,7 +30,7 @@ class Button(pygame.sprite.Sprite):
                     game.count_enemy += 1
                 if self.action == 'spawn_enemy-':
                     if game.spawn_enemy > 0:
-                        game.spawn_enemy -= 0.1
+                        game.spawn_enemy -= 1
                 if self.action == 'spawn_enemy+':
                     game.spawn_enemy += 1
                 if self.action == 'count_asteroid-':

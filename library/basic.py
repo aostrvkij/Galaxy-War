@@ -54,7 +54,7 @@ class Game:
             False, True, False, False, False, False
         info = read_info_ship()
         score, money = game_main.main(FPS, [self.count_asteroids, self.count_enemy, self.spawn_asteroids / 10,
-                                            self.spawn_enemy] / 10, [info[1], info[2], info[3], info[4], eval(info[5]),
+                                            self.spawn_enemy], [info[1], info[2], info[3], info[4], eval(info[5]),
                                                                 eval(info[6])], self)
         self.run_game = False
         add_cell(str(datetime.datetime.today())[:16], score)
