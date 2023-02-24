@@ -1,15 +1,18 @@
 from library.classes import *
 import pygame
+import moviepy.editor
 from random import randint
 import time
 
 
 def main(FPS, count, data_ship, game):
     pygame.mixer.music.load("Images/data/music.mp3")
+    pygame.init()
+    # video = moviepy.editor.VideoFileClip("Images/data/Spaceship-start.mp4")
+    # video.preview()
     start = time.time()
     pusk = time.time()
     pusk_as = time.time()
-    pygame.init()
     pygame.mixer.pre_init(44100, -32, 100, 1024)
     screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h))
     size = screen.get_size()
